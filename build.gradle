@@ -6,6 +6,10 @@ apply plugin: 'java'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+task gradle_start {
+    println '\n\n  _-_-_-_-_-_	STARTING GRADLE EXECUTION   _-_-_-_-_-_	\n\n'
+}
+
 repositories {
     mavenCentral()
 }
@@ -15,19 +19,17 @@ dependencies {
     testCompile 'io.appium:java-client:4.1.2'
 }
 
+println '//\n------------------------Testing Started---------------------------------'
 test {
     // enable TestNG support (default is JUnit)
-    useTestNG(){
+    useTestNG() {
     }
-
-    // set a system property for the test JVM(s)
-    systemProperty 'some.prop', 'value'
 
     // explicitly include or exclude tests
     include '**/*Test*.*'
 
     // show standard out and standard error of the test JVM(s) on the console
-    testLogging.showStandardStreams = true
+    testLogging.showStandardStreams = false
 
     // set heap size for the test JVM(s)
     minHeapSize = "128m"
@@ -43,6 +45,6 @@ test {
 
     // listen to standard out and standard error of the test JVM(s)
     onOutput { descriptor, event ->
-        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message)
     }
 }

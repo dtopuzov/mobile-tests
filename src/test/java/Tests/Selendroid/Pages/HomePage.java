@@ -1,4 +1,4 @@
-package Pages;
+package Tests.Selendroid.Pages;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;

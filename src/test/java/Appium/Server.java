@@ -1,5 +1,7 @@
 package Appium;
 
+import Settings.Settings;
+
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
@@ -14,12 +16,12 @@ public class Server {
     private static String appiumPath = System.getenv("APPDATA") + "\\npm\\node_modules\\appium\\build\\lib\\main.js";
     private static File appiumExecutable = new File(appiumPath);
 
-    public static void startAppiumServer() {
+    public static void startAppiumServer(Settings settings) {
         AppiumServiceBuilder serviceBuilder = new AppiumServiceBuilder()
                 .usingAnyFreePort()
                 .withAppiumJS(appiumExecutable)
                 .withStartUpTimeOut(180, TimeUnit.SECONDS)
-                .withArgument(GeneralServerFlag.LOG_LEVEL, "warn");
+                .withArgument(GeneralServerFlag.LOG_LEVEL, settings.appiumLogLevel);
 
         service = AppiumDriverLocalService.buildService(serviceBuilder);
         service.start();

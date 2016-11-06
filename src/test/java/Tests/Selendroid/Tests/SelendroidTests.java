@@ -1,12 +1,15 @@
-package Tests;
+package Tests.Selendroid.Tests;
 
 import Appium.Client;
 import BaseTest.BaseTest;
-import Pages.HomePage;
+import Tests.Selendroid.Pages.HomePage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class SelendroidAppTests extends BaseTest {
+public class SelendroidTests extends BaseTest {
+
+    SelendroidTests() throws Exception {
+    }
 
     @Test
     public void checkBox() {
