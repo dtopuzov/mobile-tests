@@ -1,12 +1,8 @@
 package Tests.Calculator.Tests;
 
-import BaseTest.BaseTest;
 import org.testng.annotations.Test;
 
-public class CalculatorTests extends BaseTest {
-
-    CalculatorTests() throws Exception {
-    }
+public class CalculatorTests {
 
     @Test
     public void todo() {

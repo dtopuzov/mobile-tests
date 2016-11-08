@@ -14,6 +14,7 @@ public class BaseTest {
 
 
     public BaseTest() throws Exception {
+        System.out.println("BaseTest init...");
         settings = new Settings();
     }
 

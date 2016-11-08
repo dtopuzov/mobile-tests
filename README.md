@@ -34,17 +34,12 @@ TODO: Add more details for test configs
 
    Run all tests
    ```
-   gradlew clean test
+   gradlew clean test -Dconfig=selendroid.emu.default.api19
    ```
    
-   Run in pacakge
+   Run tests in package
    ```
-   gradlew clean test --tests Tests.* -Dconfig=selendroid.emu.default.api19
-   ```
-   
-   Run in class all classes in Tests package starting with Selendroid
-   ```
-   gradlew clean test --tests Tests.Selendroid* -Dconfig=selendroid.emu.default.api19
+   gradlew clean test --tests Tests.Selendroid.* -Dconfig=selendroid.emu.default.api19
    ```
    
 ## TODOs
