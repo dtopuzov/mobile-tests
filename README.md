@@ -16,7 +16,7 @@ npm install -g appium
 ## Test Configurations
 
 Tests can be executed against devices, emulators or simulators.
-In order to execute same tests agains different devices it is obvius you need some configs.
+In order to execute same tests against different devices it is obvious you need some configs.
 Test configurations are available at ```src\test\resources\config``` and content looks like this:
 ```
 platform=Android
@@ -41,10 +41,29 @@ TODO: Add more details for test configs
    ```
    gradlew clean test --tests Tests.Selendroid.* -Dconfig=selendroid.emu.default.api19
    ```
-   
+
+## Implementation details
+
+### Testing Framework
+
+Tests are based on popular [TestNG](http://testng.org/doc/index.html) framework.
+
+Resources:
+[TestNG Documentation](http://testng.org/doc/documentation-main.html)
+[TestNG Tutorial](https://www.tutorialspoint.com/testng/testng_parameterized_test.htm)
+
+TestNG samples:
+[Hello-World Tests](https://github.com/dtopuzov/Demos/tree/master/src/test/java/tests/demo_02_testng_hello_world)
+[Data-Driven Tests](https://github.com/dtopuzov/Demos/tree/master/src/test/java/tests/demo_03_testng_data_driven)
+
+### Logging
+
+Logging is done via [log4j 2.x](http://logging.apache.org/log4j/2.x/).
+
+
 ## TODOs
 
-### Research checkstyle and findbugs
+### Checkstyle and findbugs
 
 Notes:
 Add https://docs.gradle.org/current/userguide/checkstyle_plugin.html

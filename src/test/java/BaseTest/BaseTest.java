@@ -3,37 +3,61 @@ package BaseTest;
 import Appium.Client;
 import Appium.Server;
 import Settings.Settings;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
+
+import java.lang.reflect.Method;
 
 public class BaseTest {
 
-    public static Settings settings;
+    public Settings settings;
+    public Logger log = LogManager.getRootLogger();
 
+    private Exception failedToInitSettings = null;
 
-    public BaseTest() throws Exception {
-        System.out.println("BaseTest init...");
-        settings = new Settings();
+    private void initSettings() {
+        try {
+            this.settings = new Settings();
+        } catch (Exception e) {
+            this.failedToInitSettings = e;
+        }
     }
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
+    private void verifySettings() throws Exception {
+        if (failedToInitSettings != null) {
+            this.log.fatal("Failed to init settings.");
+            throw new Exception(failedToInitSettings);
+        }
+    }
+
+    public BaseTest() {
+        initSettings();
+    }
+
+    @BeforeClass(alwaysRun = true)
+    public void beforeClass() throws Exception {
+        verifySettings();
+
         Server.startAppiumServer(settings);
         Client.startAppiumClient(settings);
     }
 
-    @BeforeTest
-    public void beforeTest() {
+    @BeforeMethod(alwaysRun = true)
+    public void beforeTest(Method method) {
+        String testName = method.getName();
+        this.log.info("Start: " + testName);
     }
 
-    @AfterTest
+    @AfterMethod(alwaysRun = true)
     public void afterTest() {
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterClass(alwaysRun = true)
+    public void afterClass() {
         Client.stopAppiumClient();
         Server.stopAppiumServer();
     }

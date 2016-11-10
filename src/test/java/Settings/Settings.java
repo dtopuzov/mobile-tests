@@ -1,6 +1,8 @@
 package Settings;
 
-import java.io.File;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -14,19 +16,17 @@ public class Settings {
     public String appiumLogLevel;
 
     private Properties properties;
+    private Logger log = LogManager.getRootLogger();
 
     private Properties readPropertiesFile(String configFile) throws Exception {
         try {
             String path = "config/" + configFile + ".properties";
-            System.out.println(path);
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
-            System.out.println(getClass().getClassLoader().getResource(path).getPath());
             Properties properties = new Properties();
             properties.load(inputStream);
-            System.out.println("count: " + properties.size());
-            System.out.println(properties.getProperty("deviceName", " "));
             return properties;
         } catch (Exception e) {
+            log.fatal("Failed to read " + configFile);
             throw new Exception("Failed to read properties from " + configFile);
         }
     }
@@ -38,17 +38,17 @@ public class Settings {
         deviceName = properties.getProperty("deviceName", null);
         testApp = properties.getProperty("testapp", null);
         appiumLogLevel = properties.getProperty("appiumLogLevel", "warn");
-        System.out.println("platform: " + platform);
     }
 
     public Settings() throws Exception {
-        System.out.println("Settings init...");
+        log.info("Init settings...");
         String config = System.getProperty("config");
         if (config != null) {
-            System.out.println("Read settings from " + config);
+            log.debug("Configuration: " + config);
             properties = readPropertiesFile(config);
             initSettings();
         } else {
+            log.fatal("Config file not specified.");
             throw new Exception("Config file not specified.");
         }
     }

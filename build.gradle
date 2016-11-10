@@ -15,6 +15,8 @@ repositories {
 }
 
 dependencies {
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
     testCompile group: 'org.testng', name: 'testng', version: '6.9.10'
     testCompile 'io.appium:java-client:4.1.2'
 }
@@ -33,7 +35,7 @@ test {
     // include '**/*Test*.*'
 
     // show standard out and standard error of the test JVM(s) on the console
-    testLogging.showStandardStreams = false
+    testLogging.showStandardStreams = true
 
     // set heap size for the test JVM(s)
     minHeapSize = "128m"
@@ -44,6 +46,6 @@ test {
 
     testLogging {
         // Show that tests are run in the command-line output
-        events 'started', 'passed'
+        events 'started', 'passed', 'skipped', 'failed'
     }
 }

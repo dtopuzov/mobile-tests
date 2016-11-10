@@ -17,6 +17,7 @@ public class Client {
         File appDir = new File("testapps");
         File app = new File(appDir, settings.testApp);
         DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "UIAutomator2");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, settings.deviceName);
         capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
         capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, settings.defaultTimeout);
