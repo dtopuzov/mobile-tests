@@ -58,8 +58,8 @@ TestNG samples:
 
 ### Logging
 
-Logging is done via [log4j 2.x](http://logging.apache.org/log4j/2.x/).
-
+Logging is done via [log4j 2.x](https://logging.apache.org/log4j/2.x/manual/configuration.html).
+[Tutorial](http://www.journaldev.com/7128/log4j2-example-tutorial-configuration-levels-appenders)
 
 ## TODOs
 

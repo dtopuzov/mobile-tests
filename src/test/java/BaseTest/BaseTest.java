@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 public class BaseTest {
 
     public Settings settings;
-    public Logger log = LogManager.getRootLogger();
+    public Logger log = LogManager.getLogger(BaseTest.class.getName());
 
     private Exception failedToInitSettings = null;
 
