@@ -1,5 +1,5 @@
 group 'com.mobile'
-version '1.0-SNAPSHOT'
+version '0.0.1'
 
 apply plugin: 'java'
 
@@ -17,8 +17,9 @@ repositories {
 dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
-    testCompile group: 'org.testng', name: 'testng', version: '6.9.10'
-    testCompile 'io.appium:java-client:4.1.2'
+    compile group: 'org.testng', name: 'testng', version: '6.9.10'
+    compile group: 'io.appium', name: 'java-client', version: '4.1.2'
+    compile files('lib/sikulixsetup-1.1.0.jar', 'lib/sikulixsetup-1.1.0.jar')
 }
 
 println '//\n------------------------Build Tests---------------------------------'

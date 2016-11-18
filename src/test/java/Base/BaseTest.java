@@ -1,4 +1,4 @@
-package BaseTest;
+package Base;
 
 import Appium.Client;
 import Appium.Server;

@@ -1,7 +1,7 @@
 package Tests.Selendroid.Tests;
 
 import Appium.Client;
-import BaseTest.BaseTest;
+import Base.BaseTest;
 import Tests.Selendroid.Pages.HomePage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
