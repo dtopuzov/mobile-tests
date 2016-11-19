@@ -1,5 +1,8 @@
 package Settings;
 
+import Enums.DeviceType;
+import Enums.OSType;
+import Enums.PlatformType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,15 +11,29 @@ import java.util.Properties;
 
 public class Settings {
 
-    public int defaultTimeout;
-    public String platform;
-    public String platformVersion;
+    /* Sample config file
+        platform=Android
+        platformVersion=4.3
+        deviceName=Sony M4
+        deviceType=Android
+        deviceId=YT910LNE9U
+        testapp=selendroid-test-app-0.11.0.apk
+        defaultTimeout=30
+        appiumLogLevel=warn
+    */
+
+    public OSType os;
+    public PlatformType platform;
+    public double platformVersion;
     public String deviceName;
+    public DeviceType deviceType;
+    public String deviceId;
     public String testApp;
+    public int defaultTimeout;
     public String appiumLogLevel;
 
     private Properties properties;
-    private Logger log = LogManager.getRootLogger();
+    private Logger log = LogManager.getLogger(Settings.class.getName());
 
     private Properties readPropertiesFile(String configFile) throws Exception {
         try {
@@ -31,13 +48,58 @@ public class Settings {
         }
     }
 
-    public void initSettings() throws Exception {
-        defaultTimeout = 60;
-        platform = properties.getProperty("Android", null);
-        platformVersion = "4.4";
-        deviceName = properties.getProperty("deviceName", null);
-        testApp = properties.getProperty("testapp", null);
-        appiumLogLevel = properties.getProperty("appiumLogLevel", "warn");
+    private OSType getOSType() throws Exception {
+        String operationSystem = System.getProperty("os.name", "generic").toLowerCase();
+        if ((operationSystem.contains("mac")) || (operationSystem.contains("darwin"))) {
+            return OSType.MacOS;
+        } else if (operationSystem.contains("win")) {
+            return OSType.Windows;
+        } else if (operationSystem.contains("nux")) {
+            return OSType.Linux;
+        } else {
+            this.log.fatal("Unknown OS.");
+            throw new Exception("Unknown OS.");
+        }
+    }
+
+    private DeviceType getDeviceType() throws Exception {
+        String deviceType = properties.getProperty("deviceType", "generic").toLowerCase();
+        if (deviceType.contains("android")) {
+            return DeviceType.Android;
+        } else if (deviceType.contains("ios")) {
+            return DeviceType.iOS;
+        } else if (deviceType.contains("emu")) {
+            return DeviceType.Emulator;
+        } else if (deviceType.contains("sim")) {
+            return DeviceType.Simulator;
+        } else {
+            this.log.fatal("Unknown DeviceType.");
+            throw new Exception("Unknown DeviceType.");
+        }
+    }
+
+    private PlatformType getPlatformType() throws Exception {
+        String platformType = properties.getProperty("platform", "generic").toLowerCase();
+        if (platformType.contains("android")) {
+            return PlatformType.Andorid;
+        } else if (platformType.contains("ios")) {
+            return PlatformType.iOS;
+        } else {
+            this.log.fatal("Unknown PlatformType.");
+            throw new Exception("Unknown PlatformType.");
+        }
+    }
+
+    private void initSettings() throws Exception {
+        this.os = getOSType();
+        this.platform = getPlatformType();
+        this.platformVersion = Double.parseDouble(properties.getProperty("platformVersion", null));
+        this.deviceName = properties.getProperty("deviceName", null);
+        this.deviceType = getDeviceType();
+        this.deviceId = properties.getProperty("deviceId", null);
+        this.testApp = properties.getProperty("testapp", null);
+        this.defaultTimeout = Integer.parseInt(properties.getProperty("defaultTimeout", "30"));
+        this.appiumLogLevel = properties.getProperty("appiumLogLevel", "warn");
     }
 
     public Settings() throws Exception {
