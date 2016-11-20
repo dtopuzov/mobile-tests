@@ -29,8 +29,11 @@ public class Settings {
     public DeviceType deviceType;
     public String deviceId;
     public String testApp;
+    public String packageId;
     public int defaultTimeout;
     public String appiumLogLevel;
+    public AndroidSettings android;
+    public iOSSettings ios;
 
     private Properties properties;
     private Logger log = LogManager.getLogger(Settings.class.getName());
@@ -90,6 +93,27 @@ public class Settings {
         }
     }
 
+    private String getPackageId() {
+        String packageId = null;
+        if (this.platform == PlatformType.Andorid) {
+            packageId = "io.selendroid.testapp";
+            // TODO: Do not use hard-coded packageId
+        } else if (this.platform == PlatformType.iOS) {
+            // TODO: Implement it
+        }
+        return packageId;
+    }
+
+    private String getDefaultActivity() {
+        if (this.platform == PlatformType.Andorid) {
+            String defaultActivity = "io.selendroid.testapp.HomeScreenActivity";
+            // TODO: Do not use hard-coded defaultActivity
+            return defaultActivity;
+        } else {
+            return null; // Default activity is applicable only for Android Apps
+        }
+    }
+
     private void initSettings() throws Exception {
         this.os = getOSType();
         this.platform = getPlatformType();
@@ -98,8 +122,51 @@ public class Settings {
         this.deviceType = getDeviceType();
         this.deviceId = properties.getProperty("deviceId", null);
         this.testApp = properties.getProperty("testapp", null);
+        this.packageId = getPackageId();
         this.defaultTimeout = Integer.parseInt(properties.getProperty("defaultTimeout", "30"));
         this.appiumLogLevel = properties.getProperty("appiumLogLevel", "warn");
+    }
+
+    private void initPlatformSpecificSettings() {
+        if (this.platform == PlatformType.Andorid) {
+            this.android = this.initAndroidSettings();
+        } else if (this.platform == PlatformType.iOS) {
+            this.ios = this.initiOSSettings();
+        }
+    }
+
+    private iOSSettings initiOSSettings() {
+        this.ios = new iOSSettings();
+
+        // Set acceptAlerts
+        this.ios.acceptAlerts = this.propertyToBoolean("acceptAlerts", false);
+        this.log.info("(iOS Only) Auto Accept Alerts: " + this.ios.acceptAlerts);
+
+        return this.ios;
+    }
+
+    private AndroidSettings initAndroidSettings() {
+        this.android = new AndroidSettings();
+
+        // Set defaultActivity
+        this.android.defaultActivity = this.getDefaultActivity();
+        this.log.info("(Android Only) Default Activity: " + this.android.defaultActivity);
+
+        return this.android;
+    }
+
+    private Boolean propertyToBoolean(String str, boolean defaultValue) {
+        String value = this.properties.getProperty(str);
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value.equalsIgnoreCase("true")) {
+            return true;
+        } else if (value.equalsIgnoreCase("false")) {
+            return false;
+        } else {
+            return null;
+        }
     }
 
     public Settings() throws Exception {
@@ -109,6 +176,7 @@ public class Settings {
             log.debug("Configuration: " + config);
             properties = readPropertiesFile(config);
             initSettings();
+            initPlatformSpecificSettings();
         } else {
             log.fatal("Config file not specified.");
             throw new Exception("Config file not specified.");

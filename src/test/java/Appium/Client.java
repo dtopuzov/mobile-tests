@@ -42,8 +42,11 @@ public class Client {
                 capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.APPIUM);
             }
 
-            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_PACKAGE, "io.selendroid.testapp");
-            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, "io.selendroid.testapp.HomeScreenActivity");
+            // Wait until app is up and running
+            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_PACKAGE, settings.packageId);
+            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, settings.android.defaultActivity);
+
+            // Timeout for Android device to be available
             capabilities.setCapability(AndroidMobileCapabilityType.ANDROID_DEVICE_READY_TIMEOUT, 120);
         }
 
