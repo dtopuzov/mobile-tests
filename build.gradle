@@ -2,6 +2,7 @@ group 'com.mobile'
 version '0.0.1'
 
 apply plugin: 'java'
+apply plugin: 'checkstyle'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -22,7 +23,7 @@ dependencies {
     compile files('lib/sikulixsetup-1.1.0.jar', 'lib/sikulixsetup-1.1.0.jar')
 }
 
-println '//\n------------------------Build Tests---------------------------------'
+println '//\n------------------------Build tests---------------------------------'
 
 test {
 

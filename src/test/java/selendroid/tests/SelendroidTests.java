@@ -1,11 +1,14 @@
-package Tests.Selendroid.Tests;
+package selendroid.tests;
 
-import Appium.Client;
-import Base.BaseTest;
-import Tests.Selendroid.Pages.HomePage;
+import appium.Client;
+import base.test.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import selendroid.pages.HomePage;
 
+/**
+ * Smoke tests for Selendoid test app.
+ */
 public class SelendroidTests extends BaseTest {
 
     @Test

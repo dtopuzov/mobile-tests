@@ -1,4 +1,4 @@
-package Base;
+package base.page;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
@@ -7,14 +7,14 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.support.PageFactory;
 
-import org.sikuli.basics.Settings;
-import org.sikuli.script.*;
-import org.sikuli.script.Image;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+/**
+ * Base page.
+ * TODO(dtopuzov): Add better docs
+ */
 public class BasePage {
 
     public AppiumDriver driver;

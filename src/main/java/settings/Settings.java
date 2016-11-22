@@ -1,14 +1,27 @@
-package Settings;
+package settings;
 
-import Enums.DeviceType;
-import Enums.OSType;
-import Enums.PlatformType;
+import enums.DeviceType;
+import enums.OSType;
+import enums.PlatformType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Settings used in test runs.
+ *
+ * Settings can be defined in test/resources/config/<name-of-config>.properties
+ *
+ * Description:
+ * platform - PlatformType enum value (Android or iOS).
+ * platformVersion - Version of the platform on device under test.
+ * deviceName - Name of mobile device.
+ *              In case of Emulators - framework will automatically start emulator with specified name.
+ * deviceType - DeviceType enum value (Android, iOS, Emulator or Simulator)
+ * TODO(dtopuzov): Describe all the settings
+ */
 public class Settings {
 
     /* Sample config file
@@ -33,7 +46,7 @@ public class Settings {
     public int defaultTimeout;
     public String appiumLogLevel;
     public AndroidSettings android;
-    public iOSSettings ios;
+    public IOSSettings ios;
 
     private Properties properties;
     private Logger log = LogManager.getLogger(Settings.class.getName());
@@ -97,9 +110,9 @@ public class Settings {
         String packageId = null;
         if (this.platform == PlatformType.Andorid) {
             packageId = "io.selendroid.testapp";
-            // TODO: Do not use hard-coded packageId
+            // TODO(dtopuzov): Do not use hard-coded packageId
         } else if (this.platform == PlatformType.iOS) {
-            // TODO: Implement it
+            // TODO(dtopuzov): Implement it
         }
         return packageId;
     }
@@ -107,7 +120,7 @@ public class Settings {
     private String getDefaultActivity() {
         if (this.platform == PlatformType.Andorid) {
             String defaultActivity = "io.selendroid.testapp.HomeScreenActivity";
-            // TODO: Do not use hard-coded defaultActivity
+            // TODO(dtopuzov): Do not use hard-coded defaultActivity
             return defaultActivity;
         } else {
             return null; // Default activity is applicable only for Android Apps
@@ -131,12 +144,12 @@ public class Settings {
         if (this.platform == PlatformType.Andorid) {
             this.android = this.initAndroidSettings();
         } else if (this.platform == PlatformType.iOS) {
-            this.ios = this.initiOSSettings();
+            this.ios = this.initIOSSettings();
         }
     }
 
-    private iOSSettings initiOSSettings() {
-        this.ios = new iOSSettings();
+    private IOSSettings initIOSSettings() {
+        this.ios = new IOSSettings();
 
         // Set acceptAlerts
         this.ios.acceptAlerts = this.propertyToBoolean("acceptAlerts", false);

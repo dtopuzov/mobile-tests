@@ -1,10 +1,13 @@
-package Tests.Selendroid.Pages;
+package selendroid.pages;
 
-import Base.BasePage;
+import base.page.BasePage;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import org.openqa.selenium.support.FindBy;
 
+/**
+ * Home page of Selendoid test app.
+ */
 public class HomePage extends BasePage {
 
     public HomePage(AppiumDriver driver) {

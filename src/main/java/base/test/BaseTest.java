@@ -1,17 +1,21 @@
-package Base;
+package base.test;
 
-import Appium.Client;
-import Appium.Server;
-import Settings.Settings;
+import appium.Client;
+import appium.Server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import settings.Settings;
 
 import java.lang.reflect.Method;
 
+/**
+ * Base test.
+ * TODO(dtopuzov): Add better docs
+ */
 public class BaseTest {
 
     public Settings settings;

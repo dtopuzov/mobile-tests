@@ -1,8 +1,7 @@
-package Appium;
+package appium;
 
-import Enums.DeviceType;
-import Enums.PlatformType;
-import Settings.Settings;
+import enums.DeviceType;
+import enums.PlatformType;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.AutomationName;
@@ -10,10 +9,15 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import settings.Settings;
 
 import java.io.File;
 import java.net.MalformedURLException;
 
+/**
+ * Appium client.
+ * TODO(dtopuzov): Add better docs
+ */
 public class Client {
 
     public static AndroidDriver driver;
