@@ -7,10 +7,6 @@ apply plugin: 'checkstyle'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-task gradle_start {
-    println '\n\n  _-_-_-_-_-_	STARTING GRADLE EXECUTION   _-_-_-_-_-_	\n\n'
-}
-
 repositories {
     mavenCentral()
 }
@@ -23,7 +19,9 @@ dependencies {
     compile files('lib/sikulixsetup-1.1.0.jar', 'lib/sikulixsetup-1.1.0.jar')
 }
 
-println '//\n------------------------Build tests---------------------------------'
+build.dependsOn(check)
+test.dependsOn(check)
+check.dependsOn.remove(test)
 
 test {
 

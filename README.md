@@ -1,7 +1,16 @@
 # Mobile Tests with Appium
 
 ## About 
-Sample project showing how to automate mobile apps with Appium
+
+Sample project showing how to automate mobile apps with Appium.
+
+Technologies used:
+- JDK
+- Gradle
+- Appium
+- Sikuli
+- TestNG
+- log4j
 
 ## Requirements 
 
@@ -16,8 +25,10 @@ npm install -g appium
 ## Test Configurations
 
 Tests can be executed against devices, emulators or simulators.
+
 In order to execute same tests against different devices it is obvious you need some configs.
-Test configurations are available at ```src\test\resources\config``` and content looks like this:
+Test configurations are available at `src\test\resources\config` and content looks like this:
+
 ```
 platform=Android
 platformVersion=4.4
@@ -39,8 +50,22 @@ TODO: Add more details for test configs
    
    Run tests in package
    ```
-   gradlew clean test --tests Tests.Selendroid.* -Dconfig=selendroid.emu.default.api19
+   gradlew clean test --tests selendroid.* -Dconfig=selendroid.emu.default.api19
    ```
+
+## Check for code style and errors
+
+[Checkstyle](https://docs.gradle.org/current/userguide/checkstyle_plugin.html) is used to check code style.
+Rules are listed in `config/checkstyle/checkstyle.xml`
+
+`build` and `test` tasks dependes on `check`, so checks will be executed each time when you build or run tests.
+
+Task depencies are defined in `build.gradle`
+```
+build.dependsOn(check)
+test.dependsOn(check)
+check.dependsOn.remove(test)
+```
 
 ## Implementation details
 
@@ -60,16 +85,3 @@ TestNG samples:
 
 Logging is done via [log4j 2.x](https://logging.apache.org/log4j/2.x/manual/configuration.html).
 [Tutorial](http://www.journaldev.com/7128/log4j2-example-tutorial-configuration-levels-appenders)
-
-## TODOs
-
-### Checkstyle and findbugs
-
-Notes:
-Add https://docs.gradle.org/current/userguide/checkstyle_plugin.html
-```
-apply plugin: 'java'
-apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
-apply plugin: 'build-dashboard'
-```
