@@ -59,7 +59,7 @@ public class Settings {
             properties.load(inputStream);
             return properties;
         } catch (Exception e) {
-            log.fatal("Failed to read " + configFile);
+            this.log.fatal("Failed to read " + configFile);
             throw new Exception("Failed to read properties from " + configFile);
         }
     }
@@ -79,7 +79,7 @@ public class Settings {
     }
 
     private DeviceType getDeviceType() throws Exception {
-        String deviceType = properties.getProperty("deviceType", "generic").toLowerCase();
+        String deviceType = this.properties.getProperty("deviceType", "generic").toLowerCase();
         if (deviceType.contains("android")) {
             return DeviceType.Android;
         } else if (deviceType.contains("ios")) {
@@ -95,7 +95,7 @@ public class Settings {
     }
 
     private PlatformType getPlatformType() throws Exception {
-        String platformType = properties.getProperty("platform", "generic").toLowerCase();
+        String platformType = this.properties.getProperty("platform", "generic").toLowerCase();
         if (platformType.contains("android")) {
             return PlatformType.Andorid;
         } else if (platformType.contains("ios")) {
@@ -128,16 +128,16 @@ public class Settings {
     }
 
     private void initSettings() throws Exception {
-        this.os = getOSType();
-        this.platform = getPlatformType();
-        this.platformVersion = Double.parseDouble(properties.getProperty("platformVersion", null));
-        this.deviceName = properties.getProperty("deviceName", null);
-        this.deviceType = getDeviceType();
-        this.deviceId = properties.getProperty("deviceId", null);
-        this.testApp = properties.getProperty("testapp", null);
-        this.packageId = getPackageId();
-        this.defaultTimeout = Integer.parseInt(properties.getProperty("defaultTimeout", "30"));
-        this.appiumLogLevel = properties.getProperty("appiumLogLevel", "warn");
+        this.os = this.getOSType();
+        this.platform = this.getPlatformType();
+        this.platformVersion = Double.parseDouble(this.properties.getProperty("platformVersion", null));
+        this.deviceName = this.properties.getProperty("deviceName", null);
+        this.deviceType = this.getDeviceType();
+        this.deviceId = this.properties.getProperty("deviceId", null);
+        this.testApp = this.properties.getProperty("testapp", null);
+        this.packageId = this.getPackageId();
+        this.defaultTimeout = Integer.parseInt(this.properties.getProperty("defaultTimeout", "30"));
+        this.appiumLogLevel = this.properties.getProperty("appiumLogLevel", "warn");
     }
 
     private void initPlatformSpecificSettings() {
@@ -183,15 +183,15 @@ public class Settings {
     }
 
     public Settings() throws Exception {
-        log.info("Init settings...");
+        this.log.info("Init settings...");
         String config = System.getProperty("config");
         if (config != null) {
-            log.debug("Configuration: " + config);
-            properties = readPropertiesFile(config);
-            initSettings();
-            initPlatformSpecificSettings();
+            this.log.debug("Configuration: " + config);
+            this.properties = this.readPropertiesFile(config);
+            this.initSettings();
+            this.initPlatformSpecificSettings();
         } else {
-            log.fatal("Config file not specified.");
+            this.log.fatal("Config file not specified.");
             throw new Exception("Config file not specified.");
         }
     }

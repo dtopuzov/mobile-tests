@@ -32,22 +32,22 @@ public class BaseTest {
     }
 
     private void verifySettings() throws Exception {
-        if (failedToInitSettings != null) {
+        if (this.failedToInitSettings != null) {
             this.log.fatal("Failed to init settings.");
-            throw new Exception(failedToInitSettings);
+            throw new Exception(this.failedToInitSettings);
         }
     }
 
     public BaseTest() {
-        initSettings();
+        this.initSettings();
     }
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() throws Exception {
-        verifySettings();
+        this.verifySettings();
 
-        Server.startAppiumServer(settings);
-        Client.startAppiumClient(settings);
+        Server.startAppiumServer(this.settings);
+        Client.startAppiumClient(this.settings);
     }
 
     @BeforeMethod(alwaysRun = true)

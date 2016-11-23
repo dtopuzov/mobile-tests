@@ -305,5 +305,7 @@ page at http://checkstyle.sourceforge.net/config.html -->
             <property name="severity" value="warning"/>
         </module>
 
+        <module name="RequireThis" />
+
     </module>
 </module>
