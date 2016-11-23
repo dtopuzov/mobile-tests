@@ -1,7 +1,7 @@
 package selendroid.tests;
 
-import appium.Client;
-import base.test.BaseTest;
+import mobile.tests.core.appium.Client;
+import mobile.tests.core.base.test.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import selendroid.pages.HomePage;

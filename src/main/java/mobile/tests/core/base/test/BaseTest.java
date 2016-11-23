@@ -1,14 +1,14 @@
-package base.test;
+package mobile.tests.core.base.test;
 
-import appium.Client;
-import appium.Server;
+import mobile.tests.core.appium.Client;
+import mobile.tests.core.appium.Server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import settings.Settings;
+import mobile.tests.core.settings.Settings;
 
 import java.lang.reflect.Method;
 
@@ -33,7 +33,7 @@ public class BaseTest {
 
     private void verifySettings() throws Exception {
         if (this.failedToInitSettings != null) {
-            this.log.fatal("Failed to init settings.");
+            this.log.fatal("Failed to init mobile.tests.core.settings.");
             throw new Exception(this.failedToInitSettings);
         }
     }

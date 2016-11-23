@@ -1,4 +1,4 @@
-package base.page;
+package mobile.tests.core.base.page;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;

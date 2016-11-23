@@ -1,8 +1,8 @@
-package settings;
+package mobile.tests.core.settings;
 
-import enums.DeviceType;
-import enums.OSType;
-import enums.PlatformType;
+import mobile.tests.core.enums.DeviceType;
+import mobile.tests.core.enums.OSType;
+import mobile.tests.core.enums.PlatformType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +20,7 @@ import java.util.Properties;
  * deviceName - Name of mobile device.
  *              In case of Emulators - framework will automatically start emulator with specified name.
  * deviceType - DeviceType enum value (Android, iOS, Emulator or Simulator)
- * TODO(dtopuzov): Describe all the settings
+ * TODO(dtopuzov): Describe all the mobile.tests.core.settings
  */
 public class Settings {
 
@@ -183,7 +183,7 @@ public class Settings {
     }
 
     public Settings() throws Exception {
-        this.log.info("Init settings...");
+        this.log.info("Init mobile.tests.core.settings...");
         String config = System.getProperty("config");
         if (config != null) {
             this.log.debug("Configuration: " + config);

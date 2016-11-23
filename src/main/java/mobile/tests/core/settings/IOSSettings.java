@@ -1,4 +1,4 @@
-package settings;
+package mobile.tests.core.settings;
 
 /**
  * iOS specific settings.

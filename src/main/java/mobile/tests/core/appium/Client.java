@@ -1,7 +1,7 @@
-package appium;
+package mobile.tests.core.appium;
 
-import enums.DeviceType;
-import enums.PlatformType;
+import mobile.tests.core.enums.DeviceType;
+import mobile.tests.core.enums.PlatformType;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.AutomationName;
@@ -9,7 +9,7 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import settings.Settings;
+import mobile.tests.core.settings.Settings;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -64,7 +64,7 @@ public class Client {
             capabilities.setCapability(MobileCapabilityType.UDID, settings.deviceId);
         }
 
-        log.info("Starting appium client...");
+        log.info("Starting mobile.tests.core.appium client...");
         driver = new AndroidDriver<>(Server.service.getUrl(), capabilities);
         log.info("Appium client up and running!");
 
@@ -74,7 +74,7 @@ public class Client {
 
     public static void stopAppiumClient() {
         if (driver != null) {
-            log.info("Quit appium client.");
+            log.info("Quit mobile.tests.core.appium client.");
             driver.quit();
         }
     }

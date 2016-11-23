@@ -1,6 +1,6 @@
 package selendroid.pages;
 
-import base.page.BasePage;
+import mobile.tests.core.base.page.BasePage;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import org.openqa.selenium.support.FindBy;

@@ -1,4 +1,4 @@
-package enums;
+package mobile.tests.core.enums;
 
 /**
  * DeviceType is enum with all possible type of devices where you can run tests.
