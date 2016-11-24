@@ -1,18 +1,20 @@
 package mobile.tests.core.appium;
 
-import mobile.tests.core.enums.DeviceType;
-import mobile.tests.core.enums.PlatformType;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.AutomationName;
 import io.appium.java_client.remote.MobileCapabilityType;
+import mobile.tests.core.enums.ApplicationType;
+import mobile.tests.core.enums.DeviceType;
+import mobile.tests.core.enums.PlatformType;
+import mobile.tests.core.settings.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import mobile.tests.core.settings.Settings;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.Set;
 
 /**
  * Appium client.
@@ -31,8 +33,12 @@ public class Client {
 
         // Common capabilities
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, settings.deviceName);
-        capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
         capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, settings.defaultTimeout);
+
+        // Native and Hybrid apps capabilities
+        if (settings.testAppType != ApplicationType.Web) {
+            capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
+        }
 
         // Android specific capabilities
         if (settings.platform == PlatformType.Andorid) {
@@ -68,6 +74,17 @@ public class Client {
         driver = new AndroidDriver<>(Server.service.getUrl(), capabilities);
         log.info("Appium client up and running!");
 
+        // Switch to WEBVIEW context if Hybrid App is detected
+        if (settings.testAppType == ApplicationType.Hybrid) {
+            // Switch to WEBVIEW context
+            Set<String> contextNames = driver.getContextHandles();
+            for (String contextName : contextNames) {
+                if (contextName.contains("WEBVIEW")) {
+                    log.info("Hybrid app detected. Switch context to " + contextName);
+                    driver.context(contextName);
+                }
+            }
+        }
         // Notes: If default local server is running, please use:
         // driver = new AndroidDriver<>(new URL("http://0.0.0.0:4723/wd/hub"), capabilities);
     }

@@ -2,13 +2,14 @@ package mobile.tests.core.base.test;
 
 import mobile.tests.core.appium.Client;
 import mobile.tests.core.appium.Server;
+import mobile.tests.core.settings.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
-import mobile.tests.core.settings.Settings;
 
 import java.lang.reflect.Method;
 
@@ -57,7 +58,15 @@ public class BaseTest {
     }
 
     @AfterMethod(alwaysRun = true)
-    public void afterTest() {
+    public void afterTest(ITestResult result) {
+        int status = result.getStatus();
+        if (status == ITestResult.FAILURE) {
+            try {
+                this.log.debug(Client.driver.getPageSource());
+            } catch (Exception e) {
+                this.log.error("Failed to get page source.");
+            }
+        }
     }
 
     @AfterClass(alwaysRun = true)

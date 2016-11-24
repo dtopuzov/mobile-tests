@@ -1,5 +1,6 @@
 package mobile.tests.core.settings;
 
+import mobile.tests.core.enums.ApplicationType;
 import mobile.tests.core.enums.DeviceType;
 import mobile.tests.core.enums.OSType;
 import mobile.tests.core.enums.PlatformType;
@@ -11,14 +12,14 @@ import java.util.Properties;
 
 /**
  * Settings used in test runs.
- *
+ * <p>
  * Settings can be defined in test/resources/config/<name-of-config>.properties
- *
+ * <p>
  * Description:
  * platform - PlatformType enum value (Android or iOS).
  * platformVersion - Version of the platform on device under test.
  * deviceName - Name of mobile device.
- *              In case of Emulators - framework will automatically start emulator with specified name.
+ * In case of Emulators - framework will automatically start emulator with specified name.
  * deviceType - DeviceType enum value (Android, iOS, Emulator or Simulator)
  * TODO(dtopuzov): Describe all the mobile.tests.core.settings
  */
@@ -42,6 +43,7 @@ public class Settings {
     public DeviceType deviceType;
     public String deviceId;
     public String testApp;
+    public ApplicationType testAppType;
     public String packageId;
     public int defaultTimeout;
     public String appiumLogLevel;
@@ -106,25 +108,45 @@ public class Settings {
         }
     }
 
+    private ApplicationType getTestAppType() {
+        String testAppType = this.properties.getProperty("testAppType", "Native").toLowerCase();
+        if (testAppType.contains("native")) {
+            return ApplicationType.Native;
+        } else if (testAppType.contains("hybrid")) {
+            return ApplicationType.Hybrid;
+        } else if (testAppType.contains("web")) {
+            return ApplicationType.Web;
+        } else {
+            return null;
+        }
+    }
+
+
     private String getPackageId() {
-        String packageId = null;
-        if (this.platform == PlatformType.Andorid) {
-            packageId = "io.selendroid.testapp";
-            // TODO(dtopuzov): Do not use hard-coded packageId
-        } else if (this.platform == PlatformType.iOS) {
-            // TODO(dtopuzov): Implement it
+        String packageId = this.properties.getProperty("packageId", null);
+        if (packageId == null) {
+            if (this.platform == PlatformType.Andorid) {
+                packageId = "io.selendroid.testapp";
+                // TODO(dtopuzov): Do not use hard-coded packageId
+            } else if (this.platform == PlatformType.iOS) {
+                // TODO(dtopuzov): Implement it
+            }
         }
         return packageId;
     }
 
     private String getDefaultActivity() {
-        if (this.platform == PlatformType.Andorid) {
-            String defaultActivity = "io.selendroid.testapp.HomeScreenActivity";
-            // TODO(dtopuzov): Do not use hard-coded defaultActivity
-            return defaultActivity;
-        } else {
-            return null; // Default activity is applicable only for Android Apps
+        String defaultActivity = this.properties.getProperty("defaultActivity", null);
+        if (defaultActivity == null) {
+            if (this.platform == PlatformType.Andorid) {
+                defaultActivity = "io.selendroid.testapp.HomeScreenActivity";
+                // TODO(dtopuzov): Do not use hard-coded defaultActivity
+                return defaultActivity;
+            } else {
+                return null; // Default activity is applicable only for Android Apps
+            }
         }
+        return defaultActivity;
     }
 
     private void initSettings() throws Exception {
@@ -134,10 +156,23 @@ public class Settings {
         this.deviceName = this.properties.getProperty("deviceName", null);
         this.deviceType = this.getDeviceType();
         this.deviceId = this.properties.getProperty("deviceId", null);
-        this.testApp = this.properties.getProperty("testapp", null);
+        this.testApp = this.properties.getProperty("testApp", null);
+        this.testAppType = this.getTestAppType();
         this.packageId = this.getPackageId();
         this.defaultTimeout = Integer.parseInt(this.properties.getProperty("defaultTimeout", "30"));
         this.appiumLogLevel = this.properties.getProperty("appiumLogLevel", "warn");
+
+        this.log.info("Host OS: " + this.ios);
+        this.log.info("Mobile OS: " + this.platform);
+        this.log.info("Mobile OS Version: " + this.platformVersion);
+        this.log.info("Mobile Device Name: " + this.deviceName);
+        this.log.info("Mobile Device Type: " + this.deviceType);
+        this.log.info("Mobile Device Id: " + this.deviceId);
+        this.log.info("TestApp: " + this.testApp);
+        this.log.info("TestApp Type: " + this.testAppType);
+        this.log.info("TestApp PackageId: " + this.packageId);
+        this.log.info("Appium Default Timeout: " + this.defaultTimeout);
+        this.log.info("Appium Server Log Level: " + this.appiumLogLevel);
     }
 
     private void initPlatformSpecificSettings() {
@@ -153,7 +188,7 @@ public class Settings {
 
         // Set acceptAlerts
         this.ios.acceptAlerts = this.propertyToBoolean("acceptAlerts", false);
-        this.log.info("(iOS Only) Auto Accept Alerts: " + this.ios.acceptAlerts);
+        this.log.info("[iOS Only] Auto Accept Alerts: " + this.ios.acceptAlerts);
 
         return this.ios;
     }
@@ -163,7 +198,7 @@ public class Settings {
 
         // Set defaultActivity
         this.android.defaultActivity = this.getDefaultActivity();
-        this.log.info("(Android Only) Default Activity: " + this.android.defaultActivity);
+        this.log.info("[Android Only] Default Activity: " + this.android.defaultActivity);
 
         return this.android;
     }
