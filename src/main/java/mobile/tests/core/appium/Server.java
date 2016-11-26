@@ -3,9 +3,9 @@ package mobile.tests.core.appium;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
+import mobile.tests.core.settings.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import mobile.tests.core.settings.Settings;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +32,7 @@ public class Server {
                 .withLogFile(logFile)
                 .withArgument(GeneralServerFlag.LOG_LEVEL, settings.appiumLogLevel);
 
-        log.info("Starting mobile.tests.core.appium server...");
+        log.info("Starting appium server...");
         service = AppiumDriverLocalService.buildService(serviceBuilder);
         service.start();
         log.info("Appium server up and running!");
@@ -44,7 +44,7 @@ public class Server {
 
     public static void stopAppiumServer() {
         if (service != null) {
-            log.info("Quit mobile.tests.core.appium server.");
+            log.info("Quit appium server.");
             service.stop();
         }
     }

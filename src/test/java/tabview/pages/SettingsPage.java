@@ -14,6 +14,6 @@ public class SettingsPage extends NavigationBar {
         super(driver);
     }
 
-    @FindBy(xpath = "//*[@text='Settings']")
+    @FindBy(xpath = "//*[@id=\"settingsViewScreen\"]/div[1]/div[2]/h1")
     public MobileElement settingsContent;
 }

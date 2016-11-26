@@ -2,6 +2,7 @@ package tabview.pages;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 /**
@@ -13,6 +14,6 @@ public class HomePage extends NavigationBar {
         super(driver);
     }
 
-    @FindBy(xpath = "//*[@text='Home']")
-    public MobileElement homePageContent;
+    @FindBy(xpath = "//*[@id=\"homeViewScreen\"]/div[1]/div[2]/h1")
+    public WebElement homePageContent;
 }

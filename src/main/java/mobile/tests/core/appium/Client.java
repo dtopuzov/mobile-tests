@@ -15,6 +15,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Appium client.
@@ -33,7 +34,6 @@ public class Client {
 
         // Common capabilities
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, settings.deviceName);
-        capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, settings.defaultTimeout);
 
         // Native and Hybrid apps capabilities
         if (settings.testAppType != ApplicationType.Web) {
@@ -70,9 +70,21 @@ public class Client {
             capabilities.setCapability(MobileCapabilityType.UDID, settings.deviceId);
         }
 
+        // Handle debug scenario
+        // TODO(dtopuzov): Move isDebug to settings
+        boolean isDebug = java.lang.management.ManagementFactory.getRuntimeMXBean().
+                getInputArguments().toString().indexOf("jdwp") >= 0;
+        if (isDebug) {
+            log.info("Debug mode detected. Increase timeout...");
+            capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, settings.defaultTimeout * 10);
+        } else {
+            capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, settings.defaultTimeout);
+        }
+
         log.info("Starting mobile.tests.core.appium client...");
         driver = new AndroidDriver<>(Server.service.getUrl(), capabilities);
         log.info("Appium client up and running!");
+        driver.manage().timeouts().implicitlyWait(settings.defaultTimeout, TimeUnit.SECONDS);
 
         // Switch to WEBVIEW context if Hybrid App is detected
         if (settings.testAppType == ApplicationType.Hybrid) {
@@ -82,6 +94,7 @@ public class Client {
                 if (contextName.contains("WEBVIEW")) {
                     log.info("Hybrid app detected. Switch context to " + contextName);
                     driver.context(contextName);
+                    log.info("Context switched.");
                 }
             }
         }

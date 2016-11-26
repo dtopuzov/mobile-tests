@@ -3,7 +3,7 @@ package tabview.pages;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import mobile.tests.core.base.page.BasePage;
-import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 /**
@@ -15,25 +15,30 @@ public class NavigationBar extends BasePage {
         super(driver);
     }
 
-    @FindBy(id = "navigation-container")
-    public MobileElement navigationBar;
+    @FindBy(xpath = "//*[@id=\"navigation-container\"]/a[1]")
+    public WebElement homeButton;
 
-    private BasePage natigateTo(String pageName) {
-        MobileElement item = this.navigationBar.findElement(By.xpath("//[@text='" + pageName + "']"));
-        item.tap(1, 500);
-        log.info("Navigate to " + pageName);
-        return this;
-    }
+    @FindBy(xpath = "//*[@id=\"navigation-container\"]/a[2]")
+    public WebElement settingsButton;
+
+    @FindBy(xpath = "//*[@id=\"navigation-container\"]/a[3]")
+    public WebElement contactsButton;
 
     public HomePage navigateToHome() {
-        return (HomePage) this.natigateTo("Home View");
+        this.homeButton.click();
+        log.info("Navigate to home page.");
+        return (HomePage) this;
     }
 
     public SettingsPage navigateToSettings() {
-        return (SettingsPage) this.natigateTo("Settings");
+        this.settingsButton.click();
+        log.info("Navigate to settings page.");
+        return (SettingsPage) this;
     }
 
     public ContactsPage navigateToContacts() {
-        return (ContactsPage) this.natigateTo("Contacts");
+        this.contactsButton.click();
+        log.info("Navigate to contacts page.");
+        return (ContactsPage) this;
     }
 }

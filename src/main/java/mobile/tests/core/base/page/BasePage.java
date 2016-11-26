@@ -12,8 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 /**
- * Base page.
- * TODO(dtopuzov): Add better docs
+ * TODO(dtopuzov): Add better docs.
  */
 public class BasePage {
 
