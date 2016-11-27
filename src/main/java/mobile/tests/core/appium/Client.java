@@ -4,6 +4,7 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.AutomationName;
 import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
 import mobile.tests.core.enums.ApplicationType;
 import mobile.tests.core.enums.DeviceType;
 import mobile.tests.core.enums.PlatformType;
@@ -23,51 +24,59 @@ import java.util.concurrent.TimeUnit;
  */
 public class Client {
 
-    public static AndroidDriver driver;
+    public AndroidDriver driver;
 
-    private static Logger log = LogManager.getLogger(Client.class.getName());
+    private AppiumDriverLocalService server;
+    private Settings settings;
+    private Logger log = LogManager.getLogger(Client.class.getName());
 
-    public static void startAppiumClient(Settings settings) throws MalformedURLException {
+    public Client(AppiumDriverLocalService service, Settings settings) {
+        this.server = service;
+        this.settings = settings;
+    }
+
+    public void startAppiumClient() throws MalformedURLException {
         File appDir = new File("testapps");
-        File app = new File(appDir, settings.testApp);
+        File app = new File(appDir, this.settings.testApp);
         DesiredCapabilities capabilities = new DesiredCapabilities();
 
         // Common capabilities
-        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, settings.deviceName);
+        capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, this.settings.deviceName);
 
         // Native and Hybrid apps capabilities
-        if (settings.testAppType != ApplicationType.Web) {
+        if (this.settings.testAppType != ApplicationType.Web) {
             capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
         }
 
         // Android specific capabilities
-        if (settings.platform == PlatformType.Andorid) {
+        if (this.settings.platform == PlatformType.Andorid) {
 
             // Set automation technology based on Android version
-            if (settings.platformVersion < 4.2) {
+            if (this.settings.platformVersion < 4.2) {
                 capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.SELENDROID);
-            } else if (settings.platformVersion > 4.3) {
+            } else if (this.settings.platformVersion > 4.3) {
                 capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "UIAutomator2");
             } else {
                 capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.APPIUM);
             }
 
             // Wait until app is up and running
-            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_PACKAGE, settings.packageId);
-            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY, settings.android.defaultActivity);
+            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_PACKAGE, this.settings.packageId);
+            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY,
+                    this.settings.android.defaultActivity);
 
             // Timeout for Android device to be available
             capabilities.setCapability(AndroidMobileCapabilityType.ANDROID_DEVICE_READY_TIMEOUT, 120);
         }
 
         // Emulator specific capabilities
-        if (settings.deviceType == DeviceType.Emulator) {
-            capabilities.setCapability(AndroidMobileCapabilityType.AVD, settings.deviceName);
+        if (this.settings.deviceType == DeviceType.Emulator) {
+            capabilities.setCapability(AndroidMobileCapabilityType.AVD, this.settings.deviceName);
         }
 
         // Device specific capabilities
-        if ((settings.deviceType == DeviceType.Android) || (settings.deviceType == DeviceType.iOS)) {
-            capabilities.setCapability(MobileCapabilityType.UDID, settings.deviceId);
+        if ((this.settings.deviceType == DeviceType.Android) || (this.settings.deviceType == DeviceType.iOS)) {
+            capabilities.setCapability(MobileCapabilityType.UDID, this.settings.deviceId);
         }
 
         // Handle debug scenario
@@ -75,26 +84,26 @@ public class Client {
         boolean isDebug = java.lang.management.ManagementFactory.getRuntimeMXBean().
                 getInputArguments().toString().indexOf("jdwp") >= 0;
         if (isDebug) {
-            log.info("Debug mode detected. Increase timeout...");
-            capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, settings.defaultTimeout * 10);
+            this.log.info("Debug mode detected. Increase timeout...");
+            capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, this.settings.defaultTimeout * 10);
         } else {
-            capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, settings.defaultTimeout);
+            capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, this.settings.defaultTimeout);
         }
 
-        log.info("Starting appium client...");
-        driver = new AndroidDriver<>(Server.service.getUrl(), capabilities);
-        log.info("Appium client up and running!");
-        driver.manage().timeouts().implicitlyWait(settings.defaultTimeout, TimeUnit.SECONDS);
+        this.log.info("Starting appium client...");
+        this.driver = new AndroidDriver<>(this.server.getUrl(), capabilities);
+        this.log.info("Appium client up and running!");
+        this.driver.manage().timeouts().implicitlyWait(this.settings.defaultTimeout, TimeUnit.SECONDS);
 
         // Switch to WEBVIEW context if Hybrid App is detected
-        if (settings.testAppType == ApplicationType.Hybrid) {
+        if (this.settings.testAppType == ApplicationType.Hybrid) {
             // Switch to WEBVIEW context
-            Set<String> contextNames = driver.getContextHandles();
+            Set<String> contextNames = this.driver.getContextHandles();
             for (String contextName : contextNames) {
                 if (contextName.contains("WEBVIEW")) {
-                    log.info("Hybrid app detected. Switch context to " + contextName);
-                    driver.context(contextName);
-                    log.info("Context switched.");
+                    this.log.info("Hybrid app detected. Switch context to " + contextName);
+                    this.driver.context(contextName);
+                    this.log.info("Context switched.");
                 }
             }
         }
@@ -102,10 +111,10 @@ public class Client {
         // driver = new AndroidDriver<>(new URL("http://0.0.0.0:4723/wd/hub"), capabilities);
     }
 
-    public static void stopAppiumClient() {
-        if (driver != null) {
-            log.info("Quit appium client.");
-            driver.quit();
+    public void stopAppiumClient() {
+        if (this.driver != null) {
+            this.log.info("Quit appium client.");
+            this.driver.quit();
         }
     }
 }

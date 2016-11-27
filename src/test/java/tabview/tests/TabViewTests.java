@@ -1,6 +1,5 @@
 package tabview.tests;
 
-import mobile.tests.core.appium.Client;
 import mobile.tests.core.base.test.BaseTest;
 import org.testng.annotations.Test;
 import tabview.pages.ContactsPage;
@@ -14,7 +13,7 @@ public class TabViewTests extends BaseTest {
 
     @Test
     public void navigation() {
-        HomePage home = new HomePage(Client.driver);
+        HomePage home = new HomePage(this.client.driver);
         SettingsPage settings = home.navigateToSettings();
         ContactsPage contact = settings.navigateToContacts();
         home = contact.navigateToHome();

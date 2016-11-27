@@ -16,36 +16,41 @@ import java.util.concurrent.TimeUnit;
  */
 public class Server {
 
-    public static AppiumDriverLocalService service;
+    public AppiumDriverLocalService service;
 
-    private static Logger log = LogManager.getLogger(Server.class.getName());
-    private static String appiumPath = System.getenv("APPDATA") + "\\npm\\node_modules\\appium\\build\\lib\\main.js";
-    private static String logPath = System.getProperty("user.dir") + "\\build\\test-results\\log\\appium-server.log";
-    private static File appiumExecutable = new File(appiumPath);
-    private static File logFile = new File(logPath);
+    private Settings settings;
+    private Logger log = LogManager.getLogger(Server.class.getName());
+    private String appiumPath = System.getenv("APPDATA") + "\\npm\\node_modules\\appium\\build\\lib\\main.js";
+    private String logPath = System.getProperty("user.dir") + "\\build\\test-results\\log\\appium-server.log";
+    private File appiumExecutable = new File(this.appiumPath);
+    private File logFile = new File(this.logPath);
 
-    public static void startAppiumServer(Settings settings) {
+    public Server(Settings settings) {
+        this.settings = settings;
+    }
+
+    public void startAppiumServer() {
         AppiumServiceBuilder serviceBuilder = new AppiumServiceBuilder()
                 .usingAnyFreePort()
-                .withAppiumJS(appiumExecutable)
+                .withAppiumJS(this.appiumExecutable)
                 .withStartUpTimeOut(180, TimeUnit.SECONDS)
-                .withLogFile(logFile)
-                .withArgument(GeneralServerFlag.LOG_LEVEL, settings.appiumLogLevel);
+                .withLogFile(this.logFile)
+                .withArgument(GeneralServerFlag.LOG_LEVEL, this.settings.appiumLogLevel);
 
-        log.info("Starting appium server...");
-        service = AppiumDriverLocalService.buildService(serviceBuilder);
-        service.start();
-        log.info("Appium server up and running!");
+        this.log.info("Starting appium server...");
+        this.service = AppiumDriverLocalService.buildService(serviceBuilder);
+        this.service.start();
+        this.log.info("Appium server up and running!");
 
-        if (service == null || !service.isRunning()) {
+        if (this.service == null || !this.service.isRunning()) {
             throw new RuntimeException("Client server is not started!");
         }
     }
 
-    public static void stopAppiumServer() {
-        if (service != null) {
-            log.info("Quit appium server.");
-            service.stop();
+    public void stopAppiumServer() {
+        if (this.service != null) {
+            this.log.info("Quit appium server.");
+            this.service.stop();
         }
     }
 }

@@ -1,6 +1,5 @@
 package selendroid.tests;
 
-import mobile.tests.core.appium.Client;
 import mobile.tests.core.base.test.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -16,7 +15,7 @@ public class SelendroidTests extends BaseTest {
 
     @Test
     public void checkBox() {
-        HomePage seleniumDemo = new HomePage(Client.driver);
+        HomePage seleniumDemo = new HomePage(this.client.driver);
         seleniumDemo.tapCheckBox();
         Assert.assertEquals(seleniumDemo.isChecked(), false, "Checkbox is still checked.");
         seleniumDemo.tapCheckBox();
@@ -25,25 +24,25 @@ public class SelendroidTests extends BaseTest {
 
     @Test
     public void dismissPopup() throws IOException {
-        HomePage seleniumDemo = new HomePage(Client.driver);
+        HomePage seleniumDemo = new HomePage(this.client.driver);
         seleniumDemo.tapDisplayPopupWindow();
-        seleniumDemo.logCurrentScreen("Before popup dismiss.");
+        seleniumDemo.logCurrentScreen("Before popup dismiss");
         seleniumDemo.dissmissPopupDialog();
-        seleniumDemo.logCurrentScreen("After popup dismiss.");
+        seleniumDemo.logCurrentScreen("After popup dismiss");
     }
 
     @Test
     public void verifyToastMessages() throws IOException {
-        HomePage seleniumDemo = new HomePage(Client.driver);
+        HomePage seleniumDemo = new HomePage(this.client.driver);
         seleniumDemo.tapDisplayToast();
         seleniumDemo.logCurrentScreen("Toast");
     }
 
     @Test
     public void progressDialog() {
-        HomePage seleniumDemo = new HomePage(Client.driver);
+        HomePage seleniumDemo = new HomePage(this.client.driver);
         seleniumDemo.tapShowProgressBar();
-        ProgressDialog dialog = new ProgressDialog(Client.driver);
+        ProgressDialog dialog = new ProgressDialog(this.client.driver);
         dialog.waitUntilDisappear();
     }
 }
