@@ -10,6 +10,7 @@ import org.openqa.selenium.support.PageFactory;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * TODO(dtopuzov): Add better docs.
@@ -34,9 +35,17 @@ public class BasePage {
         PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }
 
+    public void logCurrentScreen(String imageName) throws IOException {
+        BufferedImage bufferedImage = this.getScreen();
+        File outputFile = new File(imageName);
+        ImageIO.write(bufferedImage, "png", outputFile);
+    }
+
     public void waitForImage(String imageName, double similarity) {
+        // TODO(dtopuzov): Implement it!
     }
 
     public void tapOnImage(String imageName, double similarity) {
+        // TODO(dtopuzov): Implement it!
     }
 }

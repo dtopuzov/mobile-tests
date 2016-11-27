@@ -81,7 +81,7 @@ public class Client {
             capabilities.setCapability(MobileCapabilityType.NEW_COMMAND_TIMEOUT, settings.defaultTimeout);
         }
 
-        log.info("Starting mobile.tests.core.appium client...");
+        log.info("Starting appium client...");
         driver = new AndroidDriver<>(Server.service.getUrl(), capabilities);
         log.info("Appium client up and running!");
         driver.manage().timeouts().implicitlyWait(settings.defaultTimeout, TimeUnit.SECONDS);
@@ -104,7 +104,7 @@ public class Client {
 
     public static void stopAppiumClient() {
         if (driver != null) {
-            log.info("Quit mobile.tests.core.appium client.");
+            log.info("Quit appium client.");
             driver.quit();
         }
     }

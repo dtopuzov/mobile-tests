@@ -49,7 +49,8 @@ public class Settings {
     public String appiumLogLevel;
     public AndroidSettings android;
     public IOSSettings ios;
-
+    public String logFilesPath = System.getProperty("user.dir") + "\\build\\test-results\\log\\";
+    public String screenshotFilesPath = System.getProperty("user.dir") + "\\build\\test-results\\screenshots\\";
     private Properties properties;
     private Logger log = LogManager.getLogger(Settings.class.getName());
 
@@ -173,6 +174,8 @@ public class Settings {
         this.log.info("TestApp PackageId: " + this.packageId);
         this.log.info("Appium Default Timeout: " + this.defaultTimeout);
         this.log.info("Appium Server Log Level: " + this.appiumLogLevel);
+        this.log.info("Log files location: " + this.logFilesPath);
+        this.log.info("Screenshots location: " + this.screenshotFilesPath);
     }
 
     private void initPlatformSpecificSettings() {
