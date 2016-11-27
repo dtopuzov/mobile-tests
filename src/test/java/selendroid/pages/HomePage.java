@@ -15,9 +15,7 @@ public class HomePage extends BasePage {
 
     public HomePage(AppiumDriver driver) {
         super(driver);
-        Assert.assertTrue(this.checkBox.isDisplayed());
-        Assert.assertTrue(this.displayPopupWindowButton.isDisplayed());
-        this.log.info("HomePage loaded.");
+        this.loaded();
     }
 
     @FindBy(className = "android.widget.CheckBox")
@@ -28,9 +26,28 @@ public class HomePage extends BasePage {
     @CacheLookup
     private MobileElement displayPopupWindowButton;
 
+    @FindBy(xpath = "//android.widget.Button[@text='Displays a Toast']")
+    @CacheLookup
+    private MobileElement displayToastButton;
+
+    @FindBy(xpath = "//*[@text='Hello selendroid toast!']")
+    @CacheLookup
+    private MobileElement toastMessage;
+
+    @FindBy(xpath = "//android.widget.Button[@text='Show Progress Bar for a while']")
+    @CacheLookup
+    private MobileElement showProgressBarButton;
+
     public HomePage tapCheckBox() {
         this.checkBox.tap(1, 500);
         this.log.info("Tap on checkBox");
+        return this;
+    }
+
+    public HomePage loaded() {
+        Assert.assertTrue(this.checkBox.isDisplayed());
+        Assert.assertTrue(this.displayPopupWindowButton.isDisplayed());
+        this.log.info("HomePage loaded.");
         return this;
     }
 
@@ -46,6 +63,18 @@ public class HomePage extends BasePage {
         return this;
     }
 
+    public HomePage tapDisplayToast() {
+        this.displayToastButton.tap(1, 500);
+        this.log.info("Tap on Display a Toast");
+        return this;
+    }
+
+    public HomePage tapShowProgressBar() {
+        this.showProgressBarButton.tap(1, 500);
+        this.log.info("Tap on Show Progress Bar");
+        return this;
+    }
+
     public void dissmissPopupDialog() {
         // Can not locate popup window because of https://code.google.com/p/android/issues/detail?id=93268
         // TODO(dtopuzov): Implement better workaround (if possible)
@@ -54,5 +83,9 @@ public class HomePage extends BasePage {
         int y = ((Double) (size.getHeight() * 0.575)).intValue();
         this.driver.tap(1, x, y, 500);
         this.log.info("Tap ok to dismiss popup window");
+    }
+
+    public void verifyToastMessageDisplayed() {
+        Assert.assertTrue(this.toastMessage.isDisplayed());
     }
 }

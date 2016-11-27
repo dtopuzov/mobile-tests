@@ -55,6 +55,7 @@ public class BaseTest {
     public void beforeTest(Method method) {
         String testName = method.getName();
         this.log.info("Start: " + testName);
+        Client.driver.resetApp();
     }
 
     @AfterMethod(alwaysRun = true)

@@ -37,7 +37,7 @@ public class BasePage {
 
     public void logCurrentScreen(String imageName) throws IOException {
         BufferedImage bufferedImage = this.getScreen();
-        File outputFile = new File(imageName);
+        File outputFile = new File(imageName + ".png");
         ImageIO.write(bufferedImage, "png", outputFile);
     }
 

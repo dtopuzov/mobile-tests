@@ -5,6 +5,7 @@ import mobile.tests.core.base.test.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import selendroid.pages.HomePage;
+import selendroid.pages.ProgressDialog;
 
 import java.io.IOException;
 
@@ -29,5 +30,20 @@ public class SelendroidTests extends BaseTest {
         seleniumDemo.logCurrentScreen("Before popup dismiss.");
         seleniumDemo.dissmissPopupDialog();
         seleniumDemo.logCurrentScreen("After popup dismiss.");
+    }
+
+    @Test
+    public void verifyToastMessages() throws IOException {
+        HomePage seleniumDemo = new HomePage(Client.driver);
+        seleniumDemo.tapDisplayToast();
+        seleniumDemo.logCurrentScreen("Toast");
+    }
+
+    @Test
+    public void progressDialog() {
+        HomePage seleniumDemo = new HomePage(Client.driver);
+        seleniumDemo.tapShowProgressBar();
+        ProgressDialog dialog = new ProgressDialog(Client.driver);
+        dialog.waitUntilDisappear();
     }
 }
