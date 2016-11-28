@@ -100,7 +100,7 @@ public class Settings {
     private PlatformType getPlatformType() throws Exception {
         String platformType = this.properties.getProperty("platform", "generic").toLowerCase();
         if (platformType.contains("android")) {
-            return PlatformType.Andorid;
+            return PlatformType.Android;
         } else if (platformType.contains("ios")) {
             return PlatformType.iOS;
         } else {
@@ -126,7 +126,7 @@ public class Settings {
     private String getPackageId() {
         String packageId = this.properties.getProperty("packageId", null);
         if (packageId == null) {
-            if (this.platform == PlatformType.Andorid) {
+            if (this.platform == PlatformType.Android) {
                 packageId = "io.selendroid.testapp";
                 // TODO(dtopuzov): Do not use hard-coded packageId
             } else if (this.platform == PlatformType.iOS) {
@@ -139,7 +139,7 @@ public class Settings {
     private String getDefaultActivity() {
         String defaultActivity = this.properties.getProperty("defaultActivity", null);
         if (defaultActivity == null) {
-            if (this.platform == PlatformType.Andorid) {
+            if (this.platform == PlatformType.Android) {
                 defaultActivity = "io.selendroid.testapp.HomeScreenActivity";
                 // TODO(dtopuzov): Do not use hard-coded defaultActivity
                 return defaultActivity;
@@ -179,7 +179,7 @@ public class Settings {
     }
 
     private void initPlatformSpecificSettings() {
-        if (this.platform == PlatformType.Andorid) {
+        if (this.platform == PlatformType.Android) {
             this.android = this.initAndroidSettings();
         } else if (this.platform == PlatformType.iOS) {
             this.ios = this.initIOSSettings();

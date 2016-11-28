@@ -49,7 +49,7 @@ public class Client {
         }
 
         // Android specific capabilities
-        if (this.settings.platform == PlatformType.Andorid) {
+        if (this.settings.platform == PlatformType.Android) {
 
             // Set automation technology based on Android version
             if (this.settings.platformVersion < 4.2) {
