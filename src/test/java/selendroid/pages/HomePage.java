@@ -69,10 +69,10 @@ public class HomePage extends BasePage {
         return this;
     }
 
-    public HomePage tapShowProgressBar() {
+    public ProgressDialog tapShowProgressBar() {
         this.showProgressBarButton.tap(1, 500);
         this.log.info("Tap on Show Progress Bar");
-        return this;
+        return new ProgressDialog(this.driver);
     }
 
     public void dissmissPopupDialog() {

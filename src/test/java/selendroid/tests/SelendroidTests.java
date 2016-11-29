@@ -41,8 +41,7 @@ public class SelendroidTests extends BaseTest {
     @Test
     public void progressDialog() {
         HomePage seleniumDemo = new HomePage(this.client.driver);
-        seleniumDemo.tapShowProgressBar();
-        ProgressDialog dialog = new ProgressDialog(this.client.driver);
+        ProgressDialog dialog = seleniumDemo.tapShowProgressBar();
         dialog.waitUntilDisappear();
     }
 }
