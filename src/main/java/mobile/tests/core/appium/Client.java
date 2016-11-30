@@ -107,8 +107,6 @@ public class Client {
                 }
             }
         }
-        // Notes: If default local server is running, please use:
-        // driver = new AndroidDriver<>(new URL("http://0.0.0.0:4723/wd/hub"), capabilities);
     }
 
     public void stopAppiumClient() {

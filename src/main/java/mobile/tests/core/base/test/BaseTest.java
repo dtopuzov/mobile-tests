@@ -63,6 +63,7 @@ public class BaseTest {
         String testName = method.getName();
         this.log.info("Start: " + testName);
         this.client.driver.resetApp();
+        // TODO(dtopuzov): Set restart app in settings and use it!
     }
 
     @AfterMethod(alwaysRun = true)

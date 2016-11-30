@@ -109,7 +109,7 @@ public class Settings {
         }
     }
 
-    private ApplicationType getTestAppType() {
+    private ApplicationType getTestAppType() throws Exception {
         String testAppType = this.properties.getProperty("testAppType", "Native").toLowerCase();
         if (testAppType.contains("native")) {
             return ApplicationType.Native;
@@ -118,7 +118,8 @@ public class Settings {
         } else if (testAppType.contains("web")) {
             return ApplicationType.Web;
         } else {
-            return null;
+            this.log.fatal("Invalid Application Type: " + testAppType);
+            throw new Exception("Invalid Application Type: " + testAppType);
         }
     }
 
@@ -163,7 +164,7 @@ public class Settings {
         this.defaultTimeout = Integer.parseInt(this.properties.getProperty("defaultTimeout", "30"));
         this.appiumLogLevel = this.properties.getProperty("appiumLogLevel", "warn");
 
-        this.log.info("Host OS: " + this.ios);
+        this.log.info("Host OS: " + this.os);
         this.log.info("Mobile OS: " + this.platform);
         this.log.info("Mobile OS Version: " + this.platformVersion);
         this.log.info("Mobile Device Name: " + this.deviceName);

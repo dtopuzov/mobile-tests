@@ -1,6 +1,7 @@
 package mobile.tests.core.base.page;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,10 +36,15 @@ public class BasePage {
         PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }
 
-    public void logCurrentScreen(String imageName) throws IOException {
+    public void logScreen(String imageName) throws IOException {
         BufferedImage bufferedImage = this.getScreen();
         File outputFile = new File(imageName + ".png");
         ImageIO.write(bufferedImage, "png", outputFile);
+    }
+
+    public MobileElement findByText(String text){
+        // TODO(dtopuzov): Implement it!
+        return null;
     }
 
     public void waitForImage(String imageName, double similarity) {
