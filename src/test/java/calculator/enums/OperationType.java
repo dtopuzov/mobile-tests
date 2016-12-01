@@ -1,8 +1,12 @@
 package calculator.enums;
 
 /**
- * OperationType is enum with types of mobile apps.
+ * Types of operations you can perform in calculator.
  */
-public enum OperationType {
-    Equals, Divide, Multiply, Plus, Minus
+public interface OperationType {
+    String EQUAL = "=";
+    String DIVIDE = "÷";
+    String MULTIPLY = "×";
+    String PLUS = "+";
+    String MINUS = "−";
 }

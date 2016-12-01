@@ -61,9 +61,9 @@ public class Client {
             }
 
             // Wait until app is up and running
-            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_PACKAGE, this.settings.packageId);
-            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY,
-                    this.settings.android.defaultActivity);
+            //capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_PACKAGE, this.settings.packageId);
+            //capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_ACTIVITY,
+            //        this.settings.android.defaultActivity);
 
             // Timeout for Android device to be available
             capabilities.setCapability(AndroidMobileCapabilityType.ANDROID_DEVICE_READY_TIMEOUT, 120);

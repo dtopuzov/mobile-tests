@@ -16,9 +16,6 @@ public class HomePage extends BasePage {
     @FindBy(className = "android.widget.EditText")
     private MobileElement resultElement;
 
-    @FindBy(className = "//android.widget.Button[@text=CLR]")
-    private MobileElement clearButton;
-
     public HomePage(AppiumDriver driver) {
         super(driver);
         this.loaded();
@@ -26,40 +23,29 @@ public class HomePage extends BasePage {
 
     private HomePage loaded() {
         Assert.assertTrue(this.resultElement.isDisplayed());
-        Assert.assertTrue(this.clearButton.isDisplayed());
         this.log.info("Calculator loaded.");
         return this;
     }
 
-    public HomePage performOperation(OperationType operation, int firstDigit, int secondDigit) {
-        this.clearButton.tap(1, 500);
-        this.log.info("Clear old results");
-        this.tapDigit(String.valueOf(firstDigit));
-        this.tapOperations(operation);
-        this.tapDigit(String.valueOf(secondDigit));
-        this.tapOperations(OperationType.Equals);
+    public HomePage performOperation(String operation, int firstDigit, int secondDigit) {
+        this.tapButton(String.valueOf(firstDigit));
+        this.tapButton(operation);
+        this.tapButton(String.valueOf(secondDigit));
+        this.tapButton(OperationType.EQUAL);
         return this;
     }
 
     public String getResult() {
-        String result = this.resultElement.getText();
+        String result = this.resultElement.getAttribute("text").trim();
         this.log.info("Result is " + result);
         return result;
     }
 
-    private HomePage tapDigit(String buttonText) {
-        String xpath = "//android.widget.Button[@text=" + buttonText + "]";
+    private HomePage tapButton(String buttonText) {
+        String xpath = "//android.widget.Button[@text='" + buttonText + "']";
         MobileElement digitButton = (MobileElement) this.driver.findElement(By.xpath(xpath));
-        digitButton.tap(1, 500);
+        digitButton.tap(1, 250);
         this.log.info("Tap " + buttonText);
-        return this;
-    }
-
-    private HomePage tapOperations(OperationType operation) {
-        String operationString = operation.name().toLowerCase();
-        MobileElement opButton = (MobileElement) this.driver.findElement(By.id(operationString));
-        opButton.tap(1, 500);
-        this.log.info("Tap " + operationString);
         return this;
     }
 }

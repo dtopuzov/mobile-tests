@@ -4,6 +4,7 @@ import calculator.enums.OperationType;
 import calculator.pages.HomePage;
 import mobile.tests.core.base.test.BaseTest;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -11,31 +12,22 @@ import org.testng.annotations.Test;
  */
 public class CalculatorTests extends BaseTest {
 
-    @Test
-    public void plus() {
-        HomePage calc = new HomePage(this.client.driver);
-        calc.performOperation(OperationType.Plus, 1, 1);
-        Assert.assertEquals("2", calc.getResult());
+    // This method will provide data for calculator tests
+    @DataProvider(name = "calcDataProvider")
+    public Object[][] createData() {
+        return new Object[][]{
+                // OperationType, firstDigit, secondDigit, expectedResult
+                {OperationType.PLUS, 1, 1, "2"},
+                {OperationType.MINUS, 3, 2, "1"},
+                {OperationType.MULTIPLY, 2, 2, "4"},
+                {OperationType.DIVIDE, 9, 3, "3"}
+        };
     }
 
-    @Test
-    public void minus() {
+    @Test(dataProvider = "calcDataProvider")
+    public void calcTest(String operation, int firstDigit, int secondDigit, String expectedResult) {
         HomePage calc = new HomePage(this.client.driver);
-        calc.performOperation(OperationType.Minus, 2, 1);
-        Assert.assertEquals("1", calc.getResult());
-    }
-
-    @Test
-    public void multiply() {
-        HomePage calc = new HomePage(this.client.driver);
-        calc.performOperation(OperationType.Multiply, 2, 2);
-        Assert.assertEquals("4", calc.getResult());
-    }
-
-    @Test
-    public void sum() {
-        HomePage calc = new HomePage(this.client.driver);
-        calc.performOperation(OperationType.Divide, 9, 3);
-        Assert.assertEquals("3", calc.getResult());
+        calc.performOperation(operation, firstDigit, secondDigit);
+        Assert.assertEquals(expectedResult, calc.getResult());
     }
 }
