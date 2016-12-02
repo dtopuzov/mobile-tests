@@ -11,16 +11,16 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Utils for host OS.
+ * Manage host OS processes.
  */
-public class OSUtils {
-    
+public class Process {
+
     private static final String[] CMD = {"cmd.exe", "/C"};
     private static final String[] BASH = {"/bin/bash", "-l", "-c"};
-    private Settings settings;
-    private Logger log = LogManager.getLogger(OSUtils.class.getName());
+    private static Settings settings;
+    private static Logger log = LogManager.getLogger(Process.class.getName());
 
-    public OSUtils(Settings settings) {
+    public Process(Settings settings) {
         this.settings = settings;
     }
 
@@ -32,13 +32,14 @@ public class OSUtils {
 
     /**
      * Run command.
-     * @param   waitFor If true wait for command to finish, else just run and exit
-     * @param   timeOut Timeout in seconds
-     * @param   command Command
-     * @return  If waitFor return output of the command, else null
+     *
+     * @param waitFor If true wait for command to finish, else just run and exit
+     * @param timeOut Timeout in seconds
+     * @param command Command
+     * @return If waitFor return output of the command, else null
      */
-    public String runProcess(boolean waitFor, int timeOut, String... command) {
-        String[] allCommand = null;
+    public static String runProcess(boolean waitFor, int timeOut, String... command) {
+        String[] allCommand;
 
         String finalCommand = "";
         for (String s : command) {
@@ -46,16 +47,16 @@ public class OSUtils {
         }
 
         try {
-            if (this.settings.os == OSType.Windows) {
-                allCommand = this.concat(CMD, command);
+            if (settings.os == OSType.Windows) {
+                allCommand = concat(CMD, command);
             } else {
-                allCommand = this.concat(BASH, command);
+                allCommand = concat(BASH, command);
             }
             ProcessBuilder pb = new ProcessBuilder(allCommand);
-            Process p = pb.start();
+            java.lang.Process p = pb.start();
 
             if (waitFor) {
-                StringBuffer output = new StringBuffer();
+                StringBuilder output = new StringBuilder();
 
                 // Note: No idea why reader should be before p.waitFor(),
                 //       but when it is after p.waitFor() execution of
@@ -63,15 +64,15 @@ public class OSUtils {
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(p.getInputStream()));
 
-                String line = "";
+                String line;
                 while ((line = reader.readLine()) != null) {
                     output.append(line + "\n");
                 }
 
                 p.waitFor(timeOut, TimeUnit.SECONDS);
 
-                this.log.debug("Execute command: " + finalCommand);
-                this.log.trace("Result: " + output.toString());
+                log.debug("Execute command: " + finalCommand);
+                log.trace("Result: " + output.toString());
 
                 return output.toString();
             } else {
@@ -86,20 +87,22 @@ public class OSUtils {
 
     /**
      * Run command.
-     * @param   command Command
-     * @return  A String containing the contents of the output
+     *
+     * @param command Command
+     * @return A String containing the contents of the output
      */
-    public String runProcess(String... command) {
-        return this.runProcess(true, 10 * 60, command);
+    public static String runProcess(String... command) {
+        return runProcess(true, 10 * 60, command);
     }
 
     /**
      * Run command.
-     * @param   timeOut Timeout in seconds
-     * @param   command Command
-     * @return  A String containing the contents of the output
+     *
+     * @param timeOut Timeout in seconds
+     * @param command Command
+     * @return A String containing the contents of the output
      */
-    public String runProcess(int timeOut, String... command) {
-        return this.runProcess(true, timeOut, command);
+    public static String runProcess(int timeOut, String... command) {
+        return runProcess(true, timeOut, command);
     }
 }

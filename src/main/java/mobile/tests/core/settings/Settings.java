@@ -4,6 +4,7 @@ import mobile.tests.core.enums.ApplicationType;
 import mobile.tests.core.enums.DeviceType;
 import mobile.tests.core.enums.OSType;
 import mobile.tests.core.enums.PlatformType;
+import mobile.tests.core.utils.android.Aapt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,6 +46,7 @@ public class Settings {
     public String testApp;
     public ApplicationType testAppType;
     public String packageId;
+    public boolean restartApp;
     public int defaultTimeout;
     public String appiumLogLevel;
     public AndroidSettings android;
@@ -128,8 +130,8 @@ public class Settings {
         String packageId = this.properties.getProperty("packageId", null);
         if (packageId == null) {
             if (this.platform == PlatformType.Android) {
-                packageId = "io.selendroid.testapp";
-                // TODO(dtopuzov): Do not use hard-coded packageId
+                Aapt appt = new Aapt(this);
+                packageId = appt.getPackage();
             } else if (this.platform == PlatformType.iOS) {
                 // TODO(dtopuzov): Implement it
             }
@@ -141,11 +143,12 @@ public class Settings {
         String defaultActivity = this.properties.getProperty("defaultActivity", null);
         if (defaultActivity == null) {
             if (this.platform == PlatformType.Android) {
-                defaultActivity = "io.selendroid.testapp.HomeScreenActivity";
-                // TODO(dtopuzov): Do not use hard-coded defaultActivity
+                Aapt appt = new Aapt(this);
+                defaultActivity = appt.getLaunchableActivity();
                 return defaultActivity;
             } else {
-                return null; // Default activity is applicable only for Android Apps
+                // Default activity is applicable only for Android Apps
+                return null;
             }
         }
         return defaultActivity;
@@ -161,22 +164,23 @@ public class Settings {
         this.testApp = this.properties.getProperty("testApp", null);
         this.testAppType = this.getTestAppType();
         this.packageId = this.getPackageId();
+        this.restartApp = Boolean.parseBoolean(this.properties.getProperty("restartApp", "true"));
         this.defaultTimeout = Integer.parseInt(this.properties.getProperty("defaultTimeout", "30"));
         this.appiumLogLevel = this.properties.getProperty("appiumLogLevel", "warn");
-
-        this.log.info("Host OS: " + this.os);
-        this.log.info("Mobile OS: " + this.platform);
-        this.log.info("Mobile OS Version: " + this.platformVersion);
-        this.log.info("Mobile Device Name: " + this.deviceName);
-        this.log.info("Mobile Device Type: " + this.deviceType);
-        this.log.info("Mobile Device Id: " + this.deviceId);
-        this.log.info("TestApp: " + this.testApp);
-        this.log.info("TestApp Type: " + this.testAppType);
-        this.log.info("TestApp PackageId: " + this.packageId);
-        this.log.info("Appium Default Timeout: " + this.defaultTimeout);
-        this.log.info("Appium Server Log Level: " + this.appiumLogLevel);
-        this.log.info("Log files location: " + this.logFilesPath);
-        this.log.info("Screenshots location: " + this.screenshotFilesPath);
+        this.log.info("[Host] Host OS: " + this.os);
+        this.log.info("[Mobile Device] Mobile OS: " + this.platform);
+        this.log.info("[Mobile Device] Mobile OS Version: " + this.platformVersion);
+        this.log.info("[Mobile Device] Mobile Device Name: " + this.deviceName);
+        this.log.info("[Mobile Device] Mobile Device Type: " + this.deviceType);
+        this.log.info("[Mobile Device] Mobile Device Id: " + this.deviceId);
+        this.log.info("[TestApp] TestApp: " + this.testApp);
+        this.log.info("[TestApp] TestApp Type: " + this.testAppType);
+        this.log.info("[TestApp] TestApp PackageId: " + this.packageId);
+        this.log.info("[Appium] Restart TestApp Between Tests: " + this.restartApp);
+        this.log.info("[Appium] Appium Default Timeout: " + this.defaultTimeout);
+        this.log.info("[Appium] Appium Server Log Level: " + this.appiumLogLevel);
+        this.log.info("[Logs] Log files location: " + this.logFilesPath);
+        this.log.info("[Logs] Screenshots location: " + this.screenshotFilesPath);
     }
 
     private void initPlatformSpecificSettings() {

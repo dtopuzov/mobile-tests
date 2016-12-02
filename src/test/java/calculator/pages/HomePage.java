@@ -44,7 +44,7 @@ public class HomePage extends BasePage {
     private HomePage tapButton(String buttonText) {
         String xpath = "//android.widget.Button[@text='" + buttonText + "']";
         MobileElement digitButton = (MobileElement) this.driver.findElement(By.xpath(xpath));
-        digitButton.tap(1, 250);
+        digitButton.click(); // Click is faster than tap gesture and usually in most of the cases it has same behaviour.
         this.log.info("Tap " + buttonText);
         return this;
     }

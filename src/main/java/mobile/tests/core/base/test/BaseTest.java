@@ -62,8 +62,9 @@ public class BaseTest {
     public void beforeTest(Method method) {
         String testName = method.getName();
         this.log.info("Start: " + testName);
-        this.client.driver.resetApp();
-        // TODO(dtopuzov): Set restart app in settings and use it!
+        if (this.settings.restartApp == true) {
+            this.client.driver.resetApp();
+        }
     }
 
     @AfterMethod(alwaysRun = true)
