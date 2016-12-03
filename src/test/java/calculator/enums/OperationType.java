@@ -1,7 +1,7 @@
 package calculator.enums;
 
 /**
- * Types of operations you can perform in calculator.
+ * Calculator enums types.
  */
 public interface OperationType {
     String EQUAL = "=";
@@ -10,3 +10,4 @@ public interface OperationType {
     String PLUS = "+";
     String MINUS = "−";
 }
+

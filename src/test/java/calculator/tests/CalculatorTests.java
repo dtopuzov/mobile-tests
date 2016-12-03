@@ -1,7 +1,7 @@
 package calculator.tests;
 
-import calculator.enums.OperationType;
 import calculator.pages.HomePage;
+import calculator.enums.OperationType;
 import mobile.tests.core.base.test.BaseTest;
 import org.openqa.selenium.ScreenOrientation;
 import org.testng.Assert;
