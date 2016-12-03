@@ -2,14 +2,15 @@ package mobile.tests.core.base.test;
 
 import mobile.tests.core.appium.Client;
 import mobile.tests.core.appium.Server;
+import mobile.tests.core.base.app.App;
 import mobile.tests.core.settings.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
 import java.lang.reflect.Method;
 
@@ -22,6 +23,7 @@ public class BaseTest {
     public Settings settings;
     public Logger log = LogManager.getLogger(BaseTest.class.getName());
     public Client client;
+    public App app;
 
     private Server server;
     private Exception failedToInitSettings = null;
@@ -52,10 +54,11 @@ public class BaseTest {
         this.initAppium();
     }
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeSuite(alwaysRun = true)
     public void beforeClass() throws Exception {
         this.verifySettings();
         this.client.startAppiumClient();
+        this.app = new App(this.settings, this.client.driver);
     }
 
     @BeforeMethod(alwaysRun = true)
@@ -63,7 +66,7 @@ public class BaseTest {
         String testName = method.getName();
         this.log.info("Start: " + testName);
         if (this.settings.restartApp == true) {
-            this.client.driver.resetApp();
+            this.app.restart();
         }
     }
 
@@ -79,7 +82,7 @@ public class BaseTest {
         }
     }
 
-    @AfterClass(alwaysRun = true)
+    @AfterSuite(alwaysRun = true)
     public void afterClass() {
         this.client.stopAppiumClient();
         this.server.stopAppiumServer();

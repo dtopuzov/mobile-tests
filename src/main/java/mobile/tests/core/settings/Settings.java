@@ -130,6 +130,9 @@ public class Settings {
         String packageId = this.properties.getProperty("packageId", null);
         if (packageId == null) {
             if (this.platform == PlatformType.Android) {
+                // TODO(dtopuzov): Think how to improve this:
+                // Now we create new instance of Aapt in getPackageId() and getDefaultActivity().
+                // It will be better if we have only one instance of Aapt in settings.
                 Aapt appt = new Aapt(this);
                 packageId = appt.getPackage();
             } else if (this.platform == PlatformType.iOS) {
