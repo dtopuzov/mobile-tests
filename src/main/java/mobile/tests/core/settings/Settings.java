@@ -46,6 +46,7 @@ public class Settings {
     public String testApp;
     public ApplicationType testAppType;
     public String packageId;
+    public String testAppName;
     public boolean restartApp;
     public int defaultTimeout;
     public String appiumLogLevel;
@@ -125,7 +126,6 @@ public class Settings {
         }
     }
 
-
     private String getPackageId() {
         String packageId = this.properties.getProperty("packageId", null);
         if (packageId == null) {
@@ -140,6 +140,26 @@ public class Settings {
             }
         }
         return packageId;
+    }
+
+    private String getTestAppName() {
+        String testAppName = this.properties.getProperty("testAppName", null);
+        if (testAppName == null) {
+            if (this.platform == PlatformType.Android) {
+                // TODO(dtopuzov): Think how to improve this:
+                // Now we create new instance of Aapt in getPackageId() and getDefaultActivity().
+                // It will be better if we have only one instance of Aapt in settings.
+                Aapt appt = new Aapt(this);
+                testAppName = appt.getApplicationLabel();
+                // Hack that might help in some cases
+                if (testAppName == null) {
+                    testAppName = this.testApp.replace(".apk", "");
+                }
+            } else if (this.platform == PlatformType.iOS) {
+                // TODO(dtopuzov): Implement it
+            }
+        }
+        return testAppName;
     }
 
     private String getDefaultActivity() {
@@ -165,6 +185,7 @@ public class Settings {
         this.deviceType = this.getDeviceType();
         this.deviceId = this.properties.getProperty("deviceId", null);
         this.testApp = this.properties.getProperty("testApp", null);
+        this.testAppName = this.getTestAppName();
         this.testAppType = this.getTestAppType();
         this.packageId = this.getPackageId();
         this.restartApp = Boolean.parseBoolean(this.properties.getProperty("restartApp", "true"));
@@ -176,7 +197,8 @@ public class Settings {
         this.log.info("[Mobile Device] Mobile Device Name: " + this.deviceName);
         this.log.info("[Mobile Device] Mobile Device Type: " + this.deviceType);
         this.log.info("[Mobile Device] Mobile Device Id: " + this.deviceId);
-        this.log.info("[TestApp] TestApp: " + this.testApp);
+        this.log.info("[TestApp] TestApp File: " + this.testApp);
+        this.log.info("[TestApp] TestApp Name: " + this.testAppName);
         this.log.info("[TestApp] TestApp Type: " + this.testAppType);
         this.log.info("[TestApp] TestApp PackageId: " + this.packageId);
         this.log.info("[Appium] Restart TestApp Between Tests: " + this.restartApp);

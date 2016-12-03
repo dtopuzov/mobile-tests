@@ -1,7 +1,7 @@
 package calculator.tests;
 
-import calculator.pages.HomePage;
 import calculator.enums.OperationType;
+import calculator.pages.HomePage;
 import mobile.tests.core.base.test.BaseTest;
 import org.openqa.selenium.ScreenOrientation;
 import org.testng.Assert;
@@ -25,7 +25,7 @@ public class CalculatorTests extends BaseTest {
         };
     }
 
-    @Test(dataProvider = "calcDataProvider")
+    @Test(enabled = false, dataProvider = "calcDataProvider")
     public void calcOperations(String operation, int firstDigit, int secondDigit, String expectedResult) {
         HomePage calc = new HomePage(this.client.driver);
         calc.performOperation(operation, firstDigit, secondDigit);

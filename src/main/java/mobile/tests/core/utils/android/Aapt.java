@@ -47,7 +47,7 @@ public class Aapt {
         String value;
         Process osUtils = new Process(settings);
         String command = aaptPath + " dump badging testapps" + File.separator + settings.testApp
-                + " | grep " + property + ":";
+                + " | grep " + property;
 
         String result = osUtils.runProcess(command);
 
@@ -62,14 +62,14 @@ public class Aapt {
     }
 
     public String getPackage() {
-        return this.runAaptCommand("package");
+        return this.runAaptCommand("package:");
     }
 
     public String getLaunchableActivity() {
-        return this.runAaptCommand("activity");
+        return this.runAaptCommand("activity:");
     }
 
     public String getApplicationLabel() {
-        return this.runAaptCommand("label");
+        return this.runAaptCommand("label-");
     }
 }
