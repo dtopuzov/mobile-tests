@@ -1,8 +1,11 @@
 package mobile.tests.core.appium;
 
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.AutomationName;
+import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import mobile.tests.core.enums.ApplicationType;
@@ -14,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Client {
 
-    public AndroidDriver driver;
+    public AppiumDriver<?> driver;
 
     private AppiumDriverLocalService server;
     private Settings settings;
@@ -35,7 +37,7 @@ public class Client {
         this.settings = settings;
     }
 
-    public void startAppiumClient() throws MalformedURLException {
+    public void startAppiumClient() throws Exception {
         File appDir = new File("testapps");
         File app = new File(appDir, this.settings.testApp);
         DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -69,9 +71,16 @@ public class Client {
             capabilities.setCapability(AndroidMobileCapabilityType.ANDROID_DEVICE_READY_TIMEOUT, 120);
         }
 
+        // iOS specific capabilities
+        if ((this.settings.deviceType == DeviceType.iOS) || (this.settings.deviceType == DeviceType.Simulator)) {
+            capabilities.setCapability(IOSMobileCapabilityType.LAUNCH_TIMEOUT, this.settings.deviceBootTimeout * 1000);
+            capabilities.setCapability(IOSMobileCapabilityType.SHOW_IOS_LOG, true);
+        }
+
         // Emulator specific capabilities
         if (this.settings.deviceType == DeviceType.Emulator) {
             capabilities.setCapability(AndroidMobileCapabilityType.AVD, this.settings.deviceName);
+            capabilities.setCapability(AndroidMobileCapabilityType.AVD_ARGS, this.settings.android.emulatorOptions);
         }
 
         // Device specific capabilities
@@ -91,7 +100,13 @@ public class Client {
         }
 
         this.log.info("Starting appium client...");
-        this.driver = new AndroidDriver<>(this.server.getUrl(), capabilities);
+        if (this.settings.platform == PlatformType.Android) {
+            this.driver = new AndroidDriver<>(this.server.getUrl(), capabilities);
+        } else if (this.settings.platform == PlatformType.iOS) {
+            this.driver = new IOSDriver<>(this.server.getUrl(), capabilities);
+        } else {
+            throw new Exception("Unknown platform type: " + this.settings.platform);
+        }
         this.log.info("Appium client up and running!");
         this.driver.manage().timeouts().implicitlyWait(this.settings.defaultTimeout, TimeUnit.SECONDS);
 

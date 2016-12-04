@@ -5,4 +5,5 @@ package mobile.tests.core.settings;
  */
 public class AndroidSettings {
     public String defaultActivity;
+    public String emulatorOptions;
 }

@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import java.io.InputStream;
 import java.util.Properties;
 
+import static java.lang.System.*;
+
 /**
  * Settings used in test runs.
  * <p/>
@@ -49,11 +51,12 @@ public class Settings {
     public String testAppName;
     public boolean restartApp;
     public int defaultTimeout;
+    public int deviceBootTimeout;
     public String appiumLogLevel;
     public AndroidSettings android;
     public IOSSettings ios;
-    public String logFilesPath = System.getProperty("user.dir") + "\\build\\test-results\\log";
-    public String screenshotFilesPath = System.getProperty("user.dir") + "\\build\\test-results\\screenshots";
+    public String logFilesPath = getProperty("user.dir") + "\\build\\test-results\\log";
+    public String screenshotFilesPath = getProperty("user.dir") + "\\build\\test-results\\screenshots";
     private Properties properties;
     private Logger log = LogManager.getLogger(Settings.class.getName());
 
@@ -71,7 +74,7 @@ public class Settings {
     }
 
     private OSType getOSType() throws Exception {
-        String operationSystem = System.getProperty("os.name", "generic").toLowerCase();
+        String operationSystem = getProperty("os.name", "generic").toLowerCase();
         if ((operationSystem.contains("mac")) || (operationSystem.contains("darwin"))) {
             return OSType.MacOS;
         } else if (operationSystem.contains("win")) {
@@ -190,6 +193,7 @@ public class Settings {
         this.packageId = this.getPackageId();
         this.restartApp = Boolean.parseBoolean(this.properties.getProperty("restartApp", "true"));
         this.defaultTimeout = Integer.parseInt(this.properties.getProperty("defaultTimeout", "30"));
+        this.deviceBootTimeout = Integer.parseInt(this.properties.getProperty("deviceBootTimeout", "180"));
         this.appiumLogLevel = this.properties.getProperty("appiumLogLevel", "warn");
         this.log.info("[Host] Host OS: " + this.os);
         this.log.info("[Mobile Device] Mobile OS: " + this.platform);
@@ -203,6 +207,7 @@ public class Settings {
         this.log.info("[TestApp] TestApp PackageId: " + this.packageId);
         this.log.info("[Appium] Restart TestApp Between Tests: " + this.restartApp);
         this.log.info("[Appium] Appium Default Timeout: " + this.defaultTimeout);
+        this.log.info("[Appium] Device Boot Timeout: " + this.deviceBootTimeout);
         this.log.info("[Appium] Appium Server Log Level: " + this.appiumLogLevel);
         this.log.info("[Logs] Log files location: " + this.logFilesPath);
         this.log.info("[Logs] Screenshots location: " + this.screenshotFilesPath);
@@ -233,6 +238,10 @@ public class Settings {
         this.android.defaultActivity = this.getDefaultActivity();
         this.log.info("[Android Only] Default Activity: " + this.android.defaultActivity);
 
+        // Set emulatorOptions
+        this.android.emulatorOptions = this.properties.getProperty("defaultActivity", "");
+        this.log.info("[Android Only] Emulator Startup Options: " + this.android.emulatorOptions);
+
         return this.android;
     }
 
@@ -252,7 +261,7 @@ public class Settings {
 
     public Settings() throws Exception {
         this.log.info("Init settings...");
-        String config = System.getProperty("config");
+        String config = getProperty("config");
         if (config != null) {
             this.log.debug("Configuration: " + config);
             this.properties = this.readPropertiesFile(config);

@@ -11,7 +11,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 
 /**
- * This class represent application under test
+ * This class represent application under test.
  */
 public class App {
 
