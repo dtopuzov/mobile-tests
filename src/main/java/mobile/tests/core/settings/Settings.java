@@ -13,9 +13,9 @@ import java.util.Properties;
 
 /**
  * Settings used in test runs.
- * <p>
+ * <p/>
  * Settings can be defined in test/resources/config/<name-of-config>.properties
- * <p>
+ * <p/>
  * Description:
  * platform - PlatformType enum value (Android or iOS).
  * platformVersion - Version of the platform on device under test.
@@ -52,8 +52,8 @@ public class Settings {
     public String appiumLogLevel;
     public AndroidSettings android;
     public IOSSettings ios;
-    public String logFilesPath = System.getProperty("user.dir") + "\\build\\test-results\\log\\";
-    public String screenshotFilesPath = System.getProperty("user.dir") + "\\build\\test-results\\screenshots\\";
+    public String logFilesPath = System.getProperty("user.dir") + "\\build\\test-results\\log";
+    public String screenshotFilesPath = System.getProperty("user.dir") + "\\build\\test-results\\screenshots";
     private Properties properties;
     private Logger log = LogManager.getLogger(Settings.class.getName());
 
@@ -251,7 +251,7 @@ public class Settings {
     }
 
     public Settings() throws Exception {
-        this.log.info("Init mobile.tests.core.settings...");
+        this.log.info("Init settings...");
         String config = System.getProperty("config");
         if (config != null) {
             this.log.debug("Configuration: " + config);

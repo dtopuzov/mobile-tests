@@ -25,7 +25,7 @@ public class CalculatorTests extends BaseTest {
         };
     }
 
-    @Test(enabled = false, dataProvider = "calcDataProvider")
+    @Test(enabled = true, dataProvider = "calcDataProvider")
     public void calcOperations(String operation, int firstDigit, int secondDigit, String expectedResult) {
         HomePage calc = new HomePage(this.client.driver);
         calc.performOperation(operation, firstDigit, secondDigit);
