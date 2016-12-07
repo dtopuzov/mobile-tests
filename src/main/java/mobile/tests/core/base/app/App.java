@@ -1,13 +1,11 @@
 package mobile.tests.core.base.app;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import mobile.tests.core.base.page.BasePage;
 import mobile.tests.core.settings.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 
 /**
@@ -22,7 +20,6 @@ public class App {
     public App(Settings settings, AppiumDriver driver) {
         this.driver = driver;
         this.settings = settings;
-        PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }
 
     public void restart() {

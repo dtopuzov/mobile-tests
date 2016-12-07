@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class SelendroidTests extends BaseTest {
 
-    @Test(enabled = false)
+    @Test
     public void checkBox() {
         HomePage seleniumDemo = new HomePage(this.client.driver);
         seleniumDemo.tapCheckBox();
@@ -22,7 +22,7 @@ public class SelendroidTests extends BaseTest {
         Assert.assertEquals(seleniumDemo.isChecked(), true, "Checkbox is unchecked.");
     }
 
-    @Test(enabled = false)
+    @Test
     public void dismissPopup() throws IOException {
         HomePage seleniumDemo = new HomePage(this.client.driver);
         seleniumDemo.tapDisplayPopupWindow();
@@ -31,7 +31,7 @@ public class SelendroidTests extends BaseTest {
         seleniumDemo.logScreen("After popup dismiss");
     }
 
-    @Test(enabled = false)
+    @Test
     public void verifyToastMessages() throws IOException {
         HomePage seleniumDemo = new HomePage(this.client.driver);
         seleniumDemo.tapDisplayToast();

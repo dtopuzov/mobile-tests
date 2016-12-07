@@ -42,7 +42,7 @@ public class BasePage {
         ImageIO.write(bufferedImage, "png", outputFile);
     }
 
-    public MobileElement findByText(String text){
+    public MobileElement findByText(String text) {
         // TODO(dtopuzov): Implement it!
         return null;
     }

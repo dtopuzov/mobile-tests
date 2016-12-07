@@ -1,7 +1,7 @@
 package calculator.enums;
 
 /**
- * Types of operations you can perform in calculator.
+ * Types of calculator operations.
  */
 public interface OperationType {
     // Note: Special symbos in this file might be pain on Windows.
