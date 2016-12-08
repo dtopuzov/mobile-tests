@@ -19,9 +19,9 @@ public class CalculatorTests extends BaseTest {
         return new Object[][]{
                 // OperationType, firstDigit, secondDigit, expectedResult
                 {OperationType.PLUS, 1, 1, "2"},
-                {OperationType.MINUS, 3, 2, "1"},
-                {OperationType.MULTIPLY, 2, 2, "4"},
-                {OperationType.DIVIDE, 9, 3, "3"}
+                {OperationType.PLUS, 1, 2, "3"},
+                {OperationType.PLUS, 1, 3, "4"},
+                {OperationType.PLUS, 1, 4, "5"}
         };
     }
 
