@@ -27,6 +27,7 @@ public class BaseTest {
 
     private Server server;
     private Exception failedToInitSettings = null;
+    private boolean isFirstTest = true;
 
     private void initSettings() {
         try {
@@ -65,9 +66,10 @@ public class BaseTest {
     public void beforeTest(Method method) {
         String testName = method.getName();
         this.log.info("Start: " + testName);
-        if (this.settings.restartApp == true) {
+        if ((this.settings.restartApp == true) && (!this.isFirstTest)) {
             this.app.restart();
         }
+        this.isFirstTest = false;
     }
 
     @AfterMethod(alwaysRun = true)

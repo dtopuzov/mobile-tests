@@ -35,14 +35,14 @@ public class Server {
         } else {
             appiumPath = Process.runProcess("which appium").trim();
         }
-        this.log.info("Appium Server Path: " + appiumPath);
+        this.log.info("[Appium Server] Path: " + appiumPath);
         return new File(appiumPath);
     }
 
     // Set location where appium log files will be writen
     private File setServerLogPath() {
         String logPath = this.settings.logFilesPath + File.separator + "appium-server.log";
-        this.log.info("Appium Server Log: " + logPath);
+        this.log.info("[Appium Server] Log: " + logPath);
         return new File(logPath);
     }
 
@@ -60,7 +60,7 @@ public class Server {
         this.log.info("Appium server up and running!");
 
         if (this.service == null || !this.service.isRunning()) {
-            throw new RuntimeException("Client server is not started!");
+            throw new RuntimeException("Appium server is not started!");
         }
     }
 

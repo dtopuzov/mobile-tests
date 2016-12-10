@@ -36,6 +36,11 @@ public class BasePage {
         PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }
 
+    public void navigateBack() {
+        this.driver.navigate().back();
+        this.log.info("Navigate back.");
+    }
+
     public void logScreen(String imageName) throws IOException {
         BufferedImage bufferedImage = this.getScreen();
         File outputFile = new File(imageName + ".png");

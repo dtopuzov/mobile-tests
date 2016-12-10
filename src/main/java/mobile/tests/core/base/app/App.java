@@ -2,6 +2,7 @@ package mobile.tests.core.base.app;
 
 import io.appium.java_client.AppiumDriver;
 import mobile.tests.core.base.page.BasePage;
+import mobile.tests.core.enums.ApplicationType;
 import mobile.tests.core.settings.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,15 +24,22 @@ public class App {
     }
 
     public void restart() {
-        this.log.info("Restarting... " + this.settings.testAppName);
+        String app;
+        if (this.settings.testAppType == ApplicationType.Web) {
+            app = this.settings.web.browser;
+        } else {
+            app = this.settings.app.testAppName;
+        }
+        this.log.info("Restarting " + app);
         this.driver.resetApp();
-        this.log.info(this.settings.testAppName + " restarted.");
+        this.log.info(app + " restarted.");
     }
 
     public void runInBackground(int seconds) {
-        this.log.info("Run " + this.settings.testAppName + " in background for " + String.valueOf(seconds) + "sec.");
+        this.log.info("Run " + this.settings.app.testAppName
+                + " in background for " + String.valueOf(seconds) + "seconds.");
         this.driver.runAppInBackground(seconds);
-        this.log.info(this.settings.testAppName + " is back on top.");
+        this.log.info(this.settings.app.testAppName + " is back on top.");
     }
 
     public void rotate(ScreenOrientation orientation) {

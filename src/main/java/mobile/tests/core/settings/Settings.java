@@ -1,5 +1,6 @@
 package mobile.tests.core.settings;
 
+import io.appium.java_client.remote.MobileBrowserType;
 import mobile.tests.core.enums.ApplicationType;
 import mobile.tests.core.enums.DeviceType;
 import mobile.tests.core.enums.OSType;
@@ -11,52 +12,32 @@ import org.apache.logging.log4j.Logger;
 import java.io.InputStream;
 import java.util.Properties;
 
-import static java.lang.System.*;
+import static java.lang.System.getProperty;
 
 /**
  * Settings used in test runs.
- * <p/>
- * Settings can be defined in test/resources/config/<name-of-config>.properties
- * <p/>
- * Description:
- * platform - PlatformType enum value (Android or iOS).
- * platformVersion - Version of the platform on device under test.
- * deviceName - Name of mobile device.
- * In case of Emulators - framework will automatically start emulator with specified name.
- * deviceType - DeviceType enum value (Android, iOS, Emulator or Simulator)
- * TODO(dtopuzov): Describe all the mobile.tests.core.settings
  */
 public class Settings {
-
-    /* Sample config file
-        platform=Android
-        platformVersion=4.3
-        deviceName=Sony M4
-        deviceType=Android
-        deviceId=YT910LNE9U
-        testapp=selendroid-test-app-0.11.0.apk
-        defaultTimeout=30
-        appiumLogLevel=warn
-    */
-
     public OSType os;
     public PlatformType platform;
     public double platformVersion;
     public String deviceName;
     public DeviceType deviceType;
     public String deviceId;
-    public String testApp;
     public ApplicationType testAppType;
-    public String packageId;
-    public String testAppName;
     public boolean restartApp;
     public int defaultTimeout;
     public int deviceBootTimeout;
     public String appiumLogLevel;
+    public AppSettings app;
+    public WebSettings web;
     public AndroidSettings android;
     public IOSSettings ios;
     public String logFilesPath = getProperty("user.dir") + "\\build\\test-results\\log";
     public String screenshotFilesPath = getProperty("user.dir") + "\\build\\test-results\\screenshots";
+    public boolean debug = java.lang.management.ManagementFactory.getRuntimeMXBean().
+            getInputArguments().toString().indexOf("jdwp") >= 0;
+
     private Properties properties;
     private Logger log = LogManager.getLogger(Settings.class.getName());
 
@@ -115,6 +96,22 @@ public class Settings {
         }
     }
 
+    private String getBrowserType() throws Exception {
+        String platformType = this.properties.getProperty("browser", "browser").toLowerCase();
+        if (platformType.contains("browser")) {
+            return MobileBrowserType.BROWSER;
+        } else if (platformType.contains("chrome")) {
+            return MobileBrowserType.CHROME;
+        } else if (platformType.contains("chromium")) {
+            return MobileBrowserType.CHROMIUM;
+        } else if (platformType.contains("safari")) {
+            return MobileBrowserType.SAFARI;
+        } else {
+            this.log.fatal("Unknown PlatformType.");
+            throw new Exception("Unknown PlatformType.");
+        }
+    }
+
     private ApplicationType getTestAppType() throws Exception {
         String testAppType = this.properties.getProperty("testAppType", "Native").toLowerCase();
         if (testAppType.contains("native")) {
@@ -133,9 +130,6 @@ public class Settings {
         String packageId = this.properties.getProperty("packageId", null);
         if (packageId == null) {
             if (this.platform == PlatformType.Android) {
-                // TODO(dtopuzov): Think how to improve this:
-                // Now we create new instance of Aapt in getPackageId() and getDefaultActivity().
-                // It will be better if we have only one instance of Aapt in settings.
                 Aapt appt = new Aapt(this);
                 packageId = appt.getPackage();
             } else if (this.platform == PlatformType.iOS) {
@@ -149,14 +143,11 @@ public class Settings {
         String testAppName = this.properties.getProperty("testAppName", null);
         if (testAppName == null) {
             if (this.platform == PlatformType.Android) {
-                // TODO(dtopuzov): Think how to improve this:
-                // Now we create new instance of Aapt in getPackageId() and getDefaultActivity().
-                // It will be better if we have only one instance of Aapt in settings.
                 Aapt appt = new Aapt(this);
                 testAppName = appt.getApplicationLabel();
                 // Hack that might help in some cases
                 if (testAppName == null) {
-                    testAppName = this.testApp.replace(".apk", "");
+                    testAppName = this.app.testApp.replace(".apk", "");
                 }
             } else if (this.platform == PlatformType.iOS) {
                 // TODO(dtopuzov): Implement it
@@ -187,10 +178,7 @@ public class Settings {
         this.deviceName = this.properties.getProperty("deviceName", null);
         this.deviceType = this.getDeviceType();
         this.deviceId = this.properties.getProperty("deviceId", null);
-        this.testApp = this.properties.getProperty("testApp", null);
-        this.testAppName = this.getTestAppName();
         this.testAppType = this.getTestAppType();
-        this.packageId = this.getPackageId();
         this.restartApp = Boolean.parseBoolean(this.properties.getProperty("restartApp", "true"));
         this.defaultTimeout = Integer.parseInt(this.properties.getProperty("defaultTimeout", "30"));
         this.deviceBootTimeout = Integer.parseInt(this.properties.getProperty("deviceBootTimeout", "180"));
@@ -201,16 +189,24 @@ public class Settings {
         this.log.info("[Mobile Device] Mobile Device Name: " + this.deviceName);
         this.log.info("[Mobile Device] Mobile Device Type: " + this.deviceType);
         this.log.info("[Mobile Device] Mobile Device Id: " + this.deviceId);
-        this.log.info("[TestApp] TestApp File: " + this.testApp);
-        this.log.info("[TestApp] TestApp Name: " + this.testAppName);
-        this.log.info("[TestApp] TestApp Type: " + this.testAppType);
-        this.log.info("[TestApp] TestApp PackageId: " + this.packageId);
         this.log.info("[Appium] Restart TestApp Between Tests: " + this.restartApp);
         this.log.info("[Appium] Appium Default Timeout: " + this.defaultTimeout);
         this.log.info("[Appium] Device Boot Timeout: " + this.deviceBootTimeout);
         this.log.info("[Appium] Appium Server Log Level: " + this.appiumLogLevel);
         this.log.info("[Logs] Log files location: " + this.logFilesPath);
         this.log.info("[Logs] Screenshots location: " + this.screenshotFilesPath);
+        this.log.info("[Other] Debug mode: " + this.debug);
+        this.log.info("[TestApp] TestApp Type: " + this.testAppType);
+    }
+
+    private void initApplicationTypeSpecificSettings() throws Exception {
+        if (this.testAppType == ApplicationType.Web) {
+            this.app = null;
+            this.web = this.initWebSettings();
+        } else {
+            this.web = null;
+            this.app = this.initAppSettings();
+        }
     }
 
     private void initPlatformSpecificSettings() {
@@ -219,6 +215,39 @@ public class Settings {
         } else if (this.platform == PlatformType.iOS) {
             this.ios = this.initIOSSettings();
         }
+    }
+
+    private AppSettings initAppSettings() {
+        this.app = new AppSettings();
+
+        this.app.testApp = this.properties.getProperty("testApp", null);
+        this.log.info("[TestApp] TestApp File: " + this.app.testApp);
+
+        this.app.testAppName = this.getTestAppName();
+        this.log.info("[TestApp] TestApp Name: " + this.app.testAppName);
+
+        this.app.packageId = this.getPackageId();
+        this.log.info("[TestApp] TestApp PackageId: " + this.app.packageId);
+
+        // Set defaultActivity
+        if (this.platform == PlatformType.Android) {
+            this.app.defaultActivity = this.getDefaultActivity();
+            this.log.info("[TestApp] Default Activity: " + this.app.defaultActivity);
+        }
+
+        return this.app;
+    }
+
+    private WebSettings initWebSettings() throws Exception {
+        this.web = new WebSettings();
+
+        this.web.browser = this.getBrowserType();
+        this.log.info("[Web] Browser: " + this.web.browser);
+
+        this.web.baseURL = this.properties.getProperty("baseURL", null);
+        this.log.info("[Web] Base URL: " + this.web.baseURL);
+
+        return this.web;
     }
 
     private IOSSettings initIOSSettings() {
@@ -233,10 +262,6 @@ public class Settings {
 
     private AndroidSettings initAndroidSettings() {
         this.android = new AndroidSettings();
-
-        // Set defaultActivity
-        this.android.defaultActivity = this.getDefaultActivity();
-        this.log.info("[Android Only] Default Activity: " + this.android.defaultActivity);
 
         // Set emulatorOptions
         this.android.emulatorOptions = this.properties.getProperty("defaultActivity", "");
@@ -266,6 +291,7 @@ public class Settings {
             this.log.debug("Configuration: " + config);
             this.properties = this.readPropertiesFile(config);
             this.initSettings();
+            this.initApplicationTypeSpecificSettings();
             this.initPlatformSpecificSettings();
         } else {
             this.log.fatal("Config file not specified.");

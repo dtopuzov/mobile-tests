@@ -46,7 +46,7 @@ public class Aapt {
     private static String runAaptCommand(String property) {
         String value;
         Process osUtils = new Process(settings);
-        String command = aaptPath + " dump badging testapps" + File.separator + settings.testApp
+        String command = aaptPath + " dump badging testapps" + File.separator + settings.app.testApp
                 + " | grep " + property;
 
         String result = osUtils.runProcess(command);
