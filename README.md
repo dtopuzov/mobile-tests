@@ -22,6 +22,7 @@ Technologies used:
 Commandline tools are enough.
 
 Setup steps:
+
 1. Download Android SDK zip and extract it
 
 2. Set ANDROID_HOME variable (in my case: `C:\Tools\android-sdk`)
@@ -29,6 +30,7 @@ Setup steps:
 3. (Optional) Add `%ANDRID_HOME%\tools` and `%ANDRID_HOME%\platform-tools` to PATH
 
 4. Update Android SDK
+
 ```
 #!/bin/bash
 
@@ -40,9 +42,9 @@ echo y | $ANDROID_HOME/tools/android update sdk --filter android-22 --all --no-u
 echo y | $ANDROID_HOME/tools/android update sdk --filter android-21 --all --no-ui
 echo y | $ANDROID_HOME/tools/android update sdk --filter android-19 --all --no-ui
 ```
-Note: Those lines are for Linux and macOS machines. Please modify if you run on Windows.
 
 5. (Recommended) Install [Intel HAXM](https://software.intel.com/en-us/android/articles/intel-hardware-accelerated-execution-manager) in order to use accelerated emulators
+
 ```
 #!/bin/bash
 echo y | $ANDROID_HOME/tools/android update sdk --filter extra-intel-Hardware_Accelerated_Execution_Manager --all --no-ui
@@ -50,6 +52,7 @@ sudo $ANDROID_HOME/extras/intel/Hardware_Accelerated_Execution_Manager/silent_in
 ```
 
 6. Download emulator images and create emulators
+
 ```
 #!/bin/bash
 
