@@ -7,6 +7,7 @@ Sample project showing how to automate mobile apps with Appium.
 Technologies used:
 - JDK
 - Gradle
+- Android commandline tools
 - Appium
 - Sikuli
 - TestNG
@@ -14,9 +15,56 @@ Technologies used:
 
 ## Requirements 
 
-[JDK 1.8+](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+### [JDK 1.8+](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 
-[Appium](http://appium.io/) 1.6.0 or above
+### [ANDROID SDK](https://developer.android.com/studio/index.html#downloads)
+
+Commandline tools are enough.
+
+Setup steps:
+1. Download Android SDK zip and extract it
+
+2. Set ANDROID_HOME variable (in my case: `C:\Tools\android-sdk`)
+
+3. (Optional) Add `%ANDRID_HOME%\tools` and `%ANDRID_HOME%\platform-tools` to PATH
+
+4. Update Android SDK
+```
+#!/bin/bash
+
+echo y | $ANDROID_HOME/tools/android update sdk --filter platform-tools --all --no-ui
+echo y | $ANDROID_HOME/tools/android update sdk --filter tools --all --no-ui
+echo y | $ANDROID_HOME/tools/android update sdk --filter build-tools-24.0.2 --all --no-ui
+echo y | $ANDROID_HOME/tools/android update sdk --filter android-23 --all --no-ui
+echo y | $ANDROID_HOME/tools/android update sdk --filter android-22 --all --no-ui
+echo y | $ANDROID_HOME/tools/android update sdk --filter android-21 --all --no-ui
+echo y | $ANDROID_HOME/tools/android update sdk --filter android-19 --all --no-ui
+```
+Note: Those lines are for Linux and macOS machines. Please modify if you run on Windows.
+
+5. (Recommended) Install [Intel HAXM](https://software.intel.com/en-us/android/articles/intel-hardware-accelerated-execution-manager) in order to use accelerated emulators
+```
+#!/bin/bash
+echo y | $ANDROID_HOME/tools/android update sdk --filter extra-intel-Hardware_Accelerated_Execution_Manager --all --no-ui
+sudo $ANDROID_HOME/extras/intel/Hardware_Accelerated_Execution_Manager/silent_install.sh
+```
+
+6. Download emulator images and create emulators
+```
+#!/bin/bash
+
+echo y | $ANDROID_HOME/tools/android update sdk --filter sys-img-x86-android-23 --all --no-ui
+echo y | $ANDROID_HOME/tools/android update sdk --filter sys-img-x86-android-22 --all --no-ui
+echo y | $ANDROID_HOME/tools/android update sdk --filter sys-img-x86-android-21 --all --no-ui
+echo y | $ANDROID_HOME/tools/android update sdk --filter sys-img-x86-android-19 --all --no-ui
+
+echo no | $ANDROID_HOME/tools/android create avd -n Emulator-Api19-Default -t android-19 --abi default/x86 -c 12M -f
+echo no | $ANDROID_HOME/tools/android create avd -n Emulator-Api21-Default -t android-21 --abi default/x86 -c 12M -f
+echo no | $ANDROID_HOME/tools/android create avd -n Emulator-Api22-Default -t android-22 --abi default/x86 -c 12M -f
+echo no | $ANDROID_HOME/tools/android create avd -n Emulator-Api23-Default -t android-23 --abi default/x86 -c 12M -f
+```
+
+### [Appium](http://appium.io/) 1.6.0 or above
 
 ```
 npm install -g appium
@@ -45,12 +93,13 @@ TODO: Add more details for test configs
 
    Run tests in package
    ```
-   gradlew clean test --tests selendroid.tests* -Dconfig=selendroid.emu.default.api19
+   gradlew clean test --tests calculator.tests* -Dconfig=calculator.emu.default.api19
    ```
 
 ## Check for code style and errors
 
 [Checkstyle](https://docs.gradle.org/current/userguide/checkstyle_plugin.html) is used to check code style.
+
 Rules are listed in `config/checkstyle/checkstyle.xml`
 
 `build` and `test` tasks dependes on `check`, so checks will be executed each time when you build or run tests.
@@ -62,21 +111,10 @@ test.dependsOn(check)
 check.dependsOn.remove(test)
 ```
 
-## Implementation details
+## Additional Resources
 
-### Testing Framework
+### Mobile Web Testing
 
-Tests are based on popular [TestNG](http://testng.org/doc/index.html) framework.
+[Appium Docs](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/mobile-web.md)
 
-Resources:
-[TestNG Documentation](http://testng.org/doc/documentation-main.html)
-[TestNG Tutorial](https://www.tutorialspoint.com/testng/testng_parameterized_test.htm)
-
-TestNG samples:
-[Hello-World Tests](https://github.com/dtopuzov/Demos/tree/master/src/test/java/tests/demo_02_testng_hello_world)
-[Data-Driven Tests](https://github.com/dtopuzov/Demos/tree/master/src/test/java/tests/demo_03_testng_data_driven)
-
-### Logging
-
-Logging is done via [log4j 2.x](https://logging.apache.org/log4j/2.x/manual/configuration.html).
-[Tutorial](http://www.journaldev.com/7128/log4j2-example-tutorial-configuration-levels-appenders)
+[Chrome Driver Docs](https://sites.google.com/a/chromium.org/chromedriver/getting-started/getting-started---android)
