@@ -24,15 +24,16 @@ public class App {
     }
 
     public void restart() {
-        String app;
         if (this.settings.testAppType == ApplicationType.Web) {
-            app = this.settings.web.browser;
+            String browser = this.settings.web.browser;
+            String url = this.settings.web.baseURL;
+            this.driver.get(this.settings.web.baseURL);
+            this.log.info(browser + " restarted at " + url);
         } else {
-            app = this.settings.app.testAppName;
+            String app = this.settings.app.testAppName;
+            this.driver.resetApp();
+            this.log.info(app + " restarted.");
         }
-        this.log.info("Restarting " + app);
-        this.driver.resetApp();
-        this.log.info(app + " restarted.");
     }
 
     public void runInBackground(int seconds) {

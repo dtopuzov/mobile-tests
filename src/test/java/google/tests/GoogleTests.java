@@ -15,7 +15,7 @@ import static io.restassured.RestAssured.given;
  */
 public class GoogleTests extends BaseTest {
 
-    @Test(enabled = false)
+    @Test
     public void searchTest() {
         HomePage home = new HomePage(this.client.driver);
         home.searchFor("Appium").verifyLinkExist("http://appium.io/");
