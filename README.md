@@ -31,6 +31,10 @@ Setup steps:
 
 4. Update Android SDK
 
+5. Install [Intel HAXM](https://software.intel.com/en-us/android/articles/intel-hardware-accelerated-execution-manager) in order to use accelerated emulators
+
+6. Download emulator images and create emulators
+
 ```
 #!/bin/bash
 
@@ -41,20 +45,9 @@ echo y | $ANDROID_HOME/tools/android update sdk --filter android-23 --all --no-u
 echo y | $ANDROID_HOME/tools/android update sdk --filter android-22 --all --no-ui
 echo y | $ANDROID_HOME/tools/android update sdk --filter android-21 --all --no-ui
 echo y | $ANDROID_HOME/tools/android update sdk --filter android-19 --all --no-ui
-```
 
-5. (Recommended) Install [Intel HAXM](https://software.intel.com/en-us/android/articles/intel-hardware-accelerated-execution-manager) in order to use accelerated emulators
-
-```
-#!/bin/bash
 echo y | $ANDROID_HOME/tools/android update sdk --filter extra-intel-Hardware_Accelerated_Execution_Manager --all --no-ui
 sudo $ANDROID_HOME/extras/intel/Hardware_Accelerated_Execution_Manager/silent_install.sh
-```
-
-6. Download emulator images and create emulators
-
-```
-#!/bin/bash
 
 echo y | $ANDROID_HOME/tools/android update sdk --filter sys-img-x86-android-23 --all --no-ui
 echo y | $ANDROID_HOME/tools/android update sdk --filter sys-img-x86-android-22 --all --no-ui
