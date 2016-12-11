@@ -39,16 +39,38 @@ public class Client {
         // Start Appium client
         this.log.info("Starting appium client...");
         if (this.settings.platform == PlatformType.Android) {
-            this.driver = new AndroidDriver<>(this.server.getUrl(), capabilities);
+            try {
+                this.driver = new AndroidDriver<>(this.server.getUrl(), capabilities);
+            } catch (Exception e) {
+                this.log.error(this.getWebDriverExceptionMessage(e));
+                throw e;
+            }
         } else if (this.settings.platform == PlatformType.iOS) {
-            this.driver = new IOSDriver<>(this.server.getUrl(), capabilities);
+            try {
+                this.driver = new IOSDriver<>(this.server.getUrl(), capabilities);
+            } catch (Exception e) {
+                this.log.error(this.getWebDriverExceptionMessage(e));
+                throw e;
+            }
         } else {
             throw new Exception("Unknown platform type: " + this.settings.platform);
         }
         this.log.info("Appium client up and running!");
         this.driver.manage().timeouts().implicitlyWait(this.settings.defaultTimeout, TimeUnit.SECONDS);
 
-        // Switch to WEBVIEW context if Hybrid App is detected
+        // Post init actions
+        if (this.settings.testAppType == ApplicationType.Web) {
+            // Post init actions for mobile web
+            String url = this.settings.web.baseURL;
+            this.driver.get(url);
+            this.log.info("Browser is up and running! Navigating to " + url);
+        } else {
+            // Post init actions for apps
+            this.log.info(this.settings.app.testAppName + " is up and running!");
+        }
+
+        // Post init actions for Hybrid apps
+        // TODO(dtopuzov): Hybrid apps testing need more work. Do it!
         if (this.settings.testAppType == ApplicationType.Hybrid) {
             // Switch to WEBVIEW context
             Set<String> contextNames = this.driver.getContextHandles();
@@ -67,5 +89,12 @@ public class Client {
             this.log.info("Quit appium client.");
             this.driver.quit();
         }
+    }
+
+    private String getWebDriverExceptionMessage(Exception e) {
+        String message = e.getMessage();
+        message = message.substring(message.indexOf(".") + 1).trim();
+        message = message.substring(0, message.indexOf('('));
+        return message;
     }
 }

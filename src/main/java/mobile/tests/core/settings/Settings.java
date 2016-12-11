@@ -239,10 +239,17 @@ public class Settings {
     }
 
     private WebSettings initWebSettings() throws Exception {
+        this.app = new AppSettings();
         this.web = new WebSettings();
 
         this.web.browser = this.getBrowserType();
         this.log.info("[Web] Browser: " + this.web.browser);
+
+        if (this.platform == PlatformType.Android) {
+            // Set packageId of browser
+            this.app.packageId = "com.android." + this.web.browser.toLowerCase();
+            this.log.info("[Web] Browser PackageId: " + this.app.packageId);
+        }
 
         this.web.baseURL = this.properties.getProperty("baseURL", null);
         this.log.info("[Web] Base URL: " + this.web.baseURL);

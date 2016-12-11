@@ -27,7 +27,7 @@ public class App {
         if (this.settings.testAppType == ApplicationType.Web) {
             String browser = this.settings.web.browser;
             String url = this.settings.web.baseURL;
-            this.driver.get(this.settings.web.baseURL);
+            this.driver.get(url);
             this.log.info(browser + " restarted at " + url);
         } else {
             String app = this.settings.app.testAppName;

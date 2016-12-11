@@ -95,6 +95,9 @@ public class Capabilities {
     // Add web specific capabilities
     private DesiredCapabilities addWebCapabilities(DesiredCapabilities capabilities, Settings settings) {
         capabilities.setCapability(MobileCapabilityType.BROWSER_NAME, this.settings.web.browser);
+        if (this.settings.platform == PlatformType.Android) {
+            capabilities.setCapability(AndroidMobileCapabilityType.APP_WAIT_PACKAGE, this.settings.app.packageId);
+        }
         return capabilities;
     }
 
