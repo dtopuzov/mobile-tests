@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -70,17 +69,17 @@ public class Client {
         }
 
         // Post init actions for Hybrid apps
-        // TODO(dtopuzov): Hybrid apps testing need more work. Do it!
         if (this.settings.testAppType == ApplicationType.Hybrid) {
+            // TODO(dtopuzov): Hybrid apps testing need more work. Do it!
             // Switch to WEBVIEW context
-            Set<String> contextNames = this.driver.getContextHandles();
-            for (String contextName : contextNames) {
-                if (contextName.contains("WEBVIEW")) {
-                    this.log.info("Hybrid app detected. Switch context to " + contextName);
-                    this.driver.context(contextName);
-                    this.log.info("Context switched.");
-                }
-            }
+            // Set<String> contextNames = this.driver.getContextHandles();
+            // for (String contextName : contextNames) {
+            //     if (contextName.contains("WEBVIEW")) {
+            //         this.log.info("Hybrid app detected. Switch context to " + contextName);
+            //         this.driver.context(contextName);
+            //         this.log.info("TestContext switched.");
+            //     }
+            // }
         }
     }
 

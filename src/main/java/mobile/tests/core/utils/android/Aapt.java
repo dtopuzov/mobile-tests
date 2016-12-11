@@ -15,11 +15,9 @@ import java.io.File;
 public class Aapt {
 
     private static String aaptPath;
-    private static Settings settings;
     private static Logger log = LogManager.getLogger(Process.class.getName());
 
-    public Aapt(Settings settings) {
-        this.settings = settings;
+    public Aapt() {
         this.aaptPath = getAaptPath();
     }
 
@@ -27,7 +25,7 @@ public class Aapt {
         String aaptPath;
 
         String aaptExecutableName = "aapt";
-        if (settings.os == OSType.Windows) {
+        if (Settings.os == OSType.Windows) {
             aaptExecutableName += ".exe";
         }
 
@@ -45,8 +43,8 @@ public class Aapt {
 
     private static String runAaptCommand(String property) {
         String value;
-        Process osUtils = new Process(settings);
-        String command = aaptPath + " dump badging testapps" + File.separator + settings.app.testApp
+        Process osUtils = new Process();
+        String command = aaptPath + " dump badging testapps" + File.separator + Settings.app.testApp
                 + " | grep " + property;
 
         String result = osUtils.runProcess(command);

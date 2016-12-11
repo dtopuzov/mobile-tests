@@ -17,11 +17,9 @@ public class Process {
 
     private static final String[] CMD = {"cmd.exe", "/C"};
     private static final String[] BASH = {"/bin/bash", "-l", "-c"};
-    private static Settings settings;
     private static Logger log = LogManager.getLogger(Process.class.getName());
 
-    public Process(Settings settings) {
-        this.settings = settings;
+    public Process() {
     }
 
     private static <T> T[] concat(T[] first, T[] second) {
@@ -47,7 +45,7 @@ public class Process {
         }
 
         try {
-            if (settings.os == OSType.Windows) {
+            if (Settings.os == OSType.Windows) {
                 allCommand = concat(CMD, command);
             } else {
                 allCommand = concat(BASH, command);

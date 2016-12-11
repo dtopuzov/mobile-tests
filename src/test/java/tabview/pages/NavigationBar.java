@@ -2,42 +2,37 @@ package tabview.pages;
 
 import io.appium.java_client.AppiumDriver;
 import mobile.tests.core.base.page.BasePage;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
+import mobile.tests.core.base.uimap.UIMapItem;
+import mobile.tests.core.utils.image.UIRectangle;
+import mobile.tests.core.base.uimap.UIMap;
 
 /**
  * Navigation bar component.
  */
 public class NavigationBar extends BasePage {
 
+    private UIMap map;
+
     public NavigationBar(AppiumDriver driver) {
         super(driver);
+        this.map = new UIMap();
     }
 
-    @FindBy(xpath = "//*[@id=\"navigation-container\"]/a[1]")
-    public WebElement homeButton;
-
-    @FindBy(xpath = "//*[@id=\"navigation-container\"]/a[2]")
-    public WebElement settingsButton;
-
-    @FindBy(xpath = "//*[@id=\"navigation-container\"]/a[3]")
-    public WebElement contactsButton;
-
     public HomePage navigateToHome() {
-        this.homeButton.click();
-        log.info("Navigate to home page.");
+        UIMapItem button = this.map.getItem("homeButton");
+        this.gestures.tap(button);
         return new HomePage(driver);
     }
 
     public SettingsPage navigateToSettings() {
-        this.settingsButton.click();
-        log.info("Navigate to settings page.");
+        UIMapItem button = this.map.getItem("settingsButton");
+        this.gestures.tap(button);
         return new SettingsPage(driver);
     }
 
     public ContactsPage navigateToContacts() {
-        this.contactsButton.click();
-        log.info("Navigate to contacts page.");
+        UIMapItem button = this.map.getItem("contactsButton");
+        this.gestures.tap(button);
         return new ContactsPage(driver);
     }
 }

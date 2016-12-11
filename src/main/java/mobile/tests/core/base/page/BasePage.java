@@ -1,8 +1,10 @@
 package mobile.tests.core.base.page;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileElement;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import mobile.tests.core.base.find.Find;
+import mobile.tests.core.base.find.FindByImage;
+import mobile.tests.core.base.gestures.Gestures;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
@@ -18,21 +20,17 @@ import java.io.IOException;
  */
 public class BasePage {
 
+    public Find finder;
+    public FindByImage findByImage;
+    public Gestures gestures;
     public AppiumDriver driver;
     public Logger log = LogManager.getLogger(BasePage.class.getName());
 
-    private BufferedImage getScreen() {
-        try {
-            File screen = this.driver.getScreenshotAs(OutputType.FILE);
-            return ImageIO.read(screen);
-        } catch (Exception e) {
-            this.log.error("Failed to take screenshot!");
-            return null;
-        }
-    }
-
     public BasePage(AppiumDriver driver) {
         this.driver = driver;
+        this.findByImage = new FindByImage(this.driver);
+        this.finder = new Find(this.driver);
+        this.gestures = new Gestures(this.driver);
         PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }
 
@@ -47,16 +45,13 @@ public class BasePage {
         ImageIO.write(bufferedImage, "png", outputFile);
     }
 
-    public MobileElement findByText(String text) {
-        // TODO(dtopuzov): Implement it!
-        return null;
-    }
-
-    public void waitForImage(String imageName, double similarity) {
-        // TODO(dtopuzov): Implement it!
-    }
-
-    public void tapOnImage(String imageName, double similarity) {
-        // TODO(dtopuzov): Implement it!
+    private BufferedImage getScreen() {
+        try {
+            File screen = this.driver.getScreenshotAs(OutputType.FILE);
+            return ImageIO.read(screen);
+        } catch (Exception e) {
+            this.log.error("Failed to take screenshot!");
+            return null;
+        }
     }
 }

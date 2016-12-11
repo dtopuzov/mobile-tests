@@ -1,6 +1,7 @@
 package google.tests;
 
 import google.pages.HomePage;
+import io.appium.java_client.MobileElement;
 import io.restassured.RestAssured;
 import mobile.tests.core.base.test.BaseTest;
 import org.openqa.selenium.By;

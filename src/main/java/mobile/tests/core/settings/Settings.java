@@ -18,30 +18,47 @@ import static java.lang.System.getProperty;
  * Settings used in test runs.
  */
 public class Settings {
-    public OSType os;
-    public PlatformType platform;
-    public double platformVersion;
-    public String deviceName;
-    public DeviceType deviceType;
-    public String deviceId;
-    public ApplicationType testAppType;
-    public boolean restartApp;
-    public int defaultTimeout;
-    public int deviceBootTimeout;
-    public String appiumLogLevel;
-    public AppSettings app;
-    public WebSettings web;
-    public AndroidSettings android;
-    public IOSSettings ios;
-    public String logFilesPath = getProperty("user.dir") + "\\build\\test-results\\log";
-    public String screenshotFilesPath = getProperty("user.dir") + "\\build\\test-results\\screenshots";
-    public boolean debug = java.lang.management.ManagementFactory.getRuntimeMXBean().
+    public static OSType os;
+    public static PlatformType platform;
+    public static double platformVersion;
+    public static String deviceName;
+    public static DeviceType deviceType;
+    public static String deviceId;
+    public static ApplicationType testAppType;
+    public static boolean restartApp;
+    public static int defaultTimeout;
+    public static int deviceBootTimeout;
+    public static String appiumLogLevel;
+    public static AppSettings app;
+    public static WebSettings web;
+    public static AndroidSettings android;
+    public static IOSSettings ios;
+    public static String logFilesPath = getProperty("user.dir") + "\\build\\test-results\\log";
+    public static String screenshotFilesPath = getProperty("user.dir") + "\\build\\test-results\\screenshots";
+    public static boolean debug = java.lang.management.ManagementFactory.getRuntimeMXBean().
             getInputArguments().toString().indexOf("jdwp") >= 0;
 
-    private Properties properties;
-    private Logger log = LogManager.getLogger(Settings.class.getName());
 
-    private Properties readPropertiesFile(String configFile) throws Exception {
+    private static Properties properties;
+    private static Aapt aapt = new Aapt();
+    private static Logger log = LogManager.getLogger(Settings.class.getName());
+
+    public Settings() throws Exception {
+        log.info("Init settings...");
+        String config = getProperty("config");
+        if (config != null) {
+            log.debug("Configuration: " + config);
+            properties = readPropertiesFile(config);
+            initSettings();
+            initApplicationTypeSpecificSettings();
+            initPlatformSpecificSettings();
+        } else {
+            log.fatal("Config file not specified.");
+            throw new Exception("Config file not specified.");
+        }
+    }
+
+    private static Properties readPropertiesFile(String configFile) throws Exception {
         try {
             String path = "config/" + configFile + ".properties";
             InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path);
@@ -49,12 +66,12 @@ public class Settings {
             properties.load(inputStream);
             return properties;
         } catch (Exception e) {
-            this.log.fatal("Failed to read " + configFile);
+            log.fatal("Failed to read " + configFile);
             throw new Exception("Failed to read properties from " + configFile);
         }
     }
 
-    private OSType getOSType() throws Exception {
+    private static OSType getOSType() throws Exception {
         String operationSystem = getProperty("os.name", "generic").toLowerCase();
         if ((operationSystem.contains("mac")) || (operationSystem.contains("darwin"))) {
             return OSType.MacOS;
@@ -63,13 +80,13 @@ public class Settings {
         } else if (operationSystem.contains("nux")) {
             return OSType.Linux;
         } else {
-            this.log.fatal("Unknown OS.");
+            log.fatal("Unknown OS.");
             throw new Exception("Unknown OS.");
         }
     }
 
-    private DeviceType getDeviceType() throws Exception {
-        String deviceType = this.properties.getProperty("deviceType", "generic").toLowerCase();
+    private static DeviceType getDeviceType() throws Exception {
+        String deviceType = properties.getProperty("deviceType", "generic").toLowerCase();
         if (deviceType.contains("android")) {
             return DeviceType.Android;
         } else if (deviceType.contains("ios")) {
@@ -79,25 +96,25 @@ public class Settings {
         } else if (deviceType.contains("sim")) {
             return DeviceType.Simulator;
         } else {
-            this.log.fatal("Unknown DeviceType.");
+            log.fatal("Unknown DeviceType.");
             throw new Exception("Unknown DeviceType.");
         }
     }
 
-    private PlatformType getPlatformType() throws Exception {
-        String platformType = this.properties.getProperty("platform", "generic").toLowerCase();
+    private static PlatformType getPlatformType() throws Exception {
+        String platformType = properties.getProperty("platform", "generic").toLowerCase();
         if (platformType.contains("android")) {
             return PlatformType.Android;
         } else if (platformType.contains("ios")) {
             return PlatformType.iOS;
         } else {
-            this.log.fatal("Unknown PlatformType.");
+            log.fatal("Unknown PlatformType.");
             throw new Exception("Unknown PlatformType.");
         }
     }
 
-    private String getBrowserType() throws Exception {
-        String platformType = this.properties.getProperty("browser", "browser").toLowerCase();
+    private static String getBrowserType() throws Exception {
+        String platformType = properties.getProperty("browser", "browser").toLowerCase();
         if (platformType.contains("browser")) {
             return MobileBrowserType.BROWSER;
         } else if (platformType.contains("chrome")) {
@@ -107,13 +124,13 @@ public class Settings {
         } else if (platformType.contains("safari")) {
             return MobileBrowserType.SAFARI;
         } else {
-            this.log.fatal("Unknown PlatformType.");
+            log.fatal("Unknown PlatformType.");
             throw new Exception("Unknown PlatformType.");
         }
     }
 
-    private ApplicationType getTestAppType() throws Exception {
-        String testAppType = this.properties.getProperty("testAppType", "Native").toLowerCase();
+    private static ApplicationType getTestAppType() throws Exception {
+        String testAppType = properties.getProperty("testAppType", "Native").toLowerCase();
         if (testAppType.contains("native")) {
             return ApplicationType.Native;
         } else if (testAppType.contains("hybrid")) {
@@ -121,47 +138,44 @@ public class Settings {
         } else if (testAppType.contains("web")) {
             return ApplicationType.Web;
         } else {
-            this.log.fatal("Invalid Application Type: " + testAppType);
+            log.fatal("Invalid Application Type: " + testAppType);
             throw new Exception("Invalid Application Type: " + testAppType);
         }
     }
 
-    private String getPackageId() {
-        String packageId = this.properties.getProperty("packageId", null);
+    private static String getPackageId() {
+        String packageId = properties.getProperty("packageId", null);
         if (packageId == null) {
-            if (this.platform == PlatformType.Android) {
-                Aapt appt = new Aapt(this);
-                packageId = appt.getPackage();
-            } else if (this.platform == PlatformType.iOS) {
+            if (platform == PlatformType.Android) {
+                packageId = aapt.getPackage();
+            } else if (platform == PlatformType.iOS) {
                 // TODO(dtopuzov): Implement it
             }
         }
         return packageId;
     }
 
-    private String getTestAppName() {
-        String testAppName = this.properties.getProperty("testAppName", null);
+    private static String getTestAppName() {
+        String testAppName = properties.getProperty("testAppName", null);
         if (testAppName == null) {
-            if (this.platform == PlatformType.Android) {
-                Aapt appt = new Aapt(this);
-                testAppName = appt.getApplicationLabel();
+            if (platform == PlatformType.Android) {
+                testAppName = aapt.getApplicationLabel();
                 // Hack that might help in some cases
                 if (testAppName == null) {
-                    testAppName = this.app.testApp.replace(".apk", "");
+                    testAppName = app.testApp.replace(".apk", "");
                 }
-            } else if (this.platform == PlatformType.iOS) {
+            } else if (platform == PlatformType.iOS) {
                 // TODO(dtopuzov): Implement it
             }
         }
         return testAppName;
     }
 
-    private String getDefaultActivity() {
-        String defaultActivity = this.properties.getProperty("defaultActivity", null);
+    private static String getDefaultActivity() {
+        String defaultActivity = properties.getProperty("defaultActivity", null);
         if (defaultActivity == null) {
-            if (this.platform == PlatformType.Android) {
-                Aapt appt = new Aapt(this);
-                defaultActivity = appt.getLaunchableActivity();
+            if (platform == PlatformType.Android) {
+                defaultActivity = aapt.getLaunchableActivity();
                 return defaultActivity;
             } else {
                 // Default activity is applicable only for Android Apps
@@ -171,114 +185,114 @@ public class Settings {
         return defaultActivity;
     }
 
-    private void initSettings() throws Exception {
-        this.os = this.getOSType();
-        this.platform = this.getPlatformType();
-        this.platformVersion = Double.parseDouble(this.properties.getProperty("platformVersion", null));
-        this.deviceName = this.properties.getProperty("deviceName", null);
-        this.deviceType = this.getDeviceType();
-        this.deviceId = this.properties.getProperty("deviceId", null);
-        this.testAppType = this.getTestAppType();
-        this.restartApp = Boolean.parseBoolean(this.properties.getProperty("restartApp", "true"));
-        this.defaultTimeout = Integer.parseInt(this.properties.getProperty("defaultTimeout", "30"));
-        this.deviceBootTimeout = Integer.parseInt(this.properties.getProperty("deviceBootTimeout", "180"));
-        this.appiumLogLevel = this.properties.getProperty("appiumLogLevel", "warn");
-        this.log.info("[Host] Host OS: " + this.os);
-        this.log.info("[Mobile Device] Mobile OS: " + this.platform);
-        this.log.info("[Mobile Device] Mobile OS Version: " + this.platformVersion);
-        this.log.info("[Mobile Device] Mobile Device Name: " + this.deviceName);
-        this.log.info("[Mobile Device] Mobile Device Type: " + this.deviceType);
-        this.log.info("[Mobile Device] Mobile Device Id: " + this.deviceId);
-        this.log.info("[Appium] Restart TestApp Between Tests: " + this.restartApp);
-        this.log.info("[Appium] Appium Default Timeout: " + this.defaultTimeout);
-        this.log.info("[Appium] Device Boot Timeout: " + this.deviceBootTimeout);
-        this.log.info("[Appium] Appium Server Log Level: " + this.appiumLogLevel);
-        this.log.info("[Logs] Log files location: " + this.logFilesPath);
-        this.log.info("[Logs] Screenshots location: " + this.screenshotFilesPath);
-        this.log.info("[Other] Debug mode: " + this.debug);
-        this.log.info("[TestApp] TestApp Type: " + this.testAppType);
+    private static void initSettings() throws Exception {
+        os = getOSType();
+        platform = getPlatformType();
+        platformVersion = Double.parseDouble(properties.getProperty("platformVersion", null));
+        deviceName = properties.getProperty("deviceName", null);
+        deviceType = getDeviceType();
+        deviceId = properties.getProperty("deviceId", null);
+        testAppType = getTestAppType();
+        restartApp = Boolean.parseBoolean(properties.getProperty("restartApp", "true"));
+        defaultTimeout = Integer.parseInt(properties.getProperty("defaultTimeout", "30"));
+        deviceBootTimeout = Integer.parseInt(properties.getProperty("deviceBootTimeout", "180"));
+        appiumLogLevel = properties.getProperty("appiumLogLevel", "warn");
+        log.info("[Host] Host OS: " + os);
+        log.info("[Mobile Device] Mobile OS: " + platform);
+        log.info("[Mobile Device] Mobile OS Version: " + platformVersion);
+        log.info("[Mobile Device] Mobile Device Name: " + deviceName);
+        log.info("[Mobile Device] Mobile Device Type: " + deviceType);
+        log.info("[Mobile Device] Mobile Device Id: " + deviceId);
+        log.info("[Appium] Restart TestApp Between Tests: " + restartApp);
+        log.info("[Appium] Appium Default Timeout: " + defaultTimeout);
+        log.info("[Appium] Device Boot Timeout: " + deviceBootTimeout);
+        log.info("[Appium] Appium Server Log Level: " + appiumLogLevel);
+        log.info("[Logs] Log files location: " + logFilesPath);
+        log.info("[Logs] Screenshots location: " + screenshotFilesPath);
+        log.info("[Other] Debug mode: " + debug);
+        log.info("[TestApp] TestApp Type: " + testAppType);
     }
 
-    private void initApplicationTypeSpecificSettings() throws Exception {
-        if (this.testAppType == ApplicationType.Web) {
-            this.app = null;
-            this.web = this.initWebSettings();
+    private static void initApplicationTypeSpecificSettings() throws Exception {
+        if (testAppType == ApplicationType.Web) {
+            app = null;
+            web = initWebSettings();
         } else {
-            this.web = null;
-            this.app = this.initAppSettings();
+            web = null;
+            app = initAppSettings();
         }
     }
 
-    private void initPlatformSpecificSettings() {
-        if (this.platform == PlatformType.Android) {
-            this.android = this.initAndroidSettings();
-        } else if (this.platform == PlatformType.iOS) {
-            this.ios = this.initIOSSettings();
+    private static void initPlatformSpecificSettings() {
+        if (platform == PlatformType.Android) {
+            android = initAndroidSettings();
+        } else if (platform == PlatformType.iOS) {
+            ios = initIOSSettings();
         }
     }
 
-    private AppSettings initAppSettings() {
-        this.app = new AppSettings();
+    private static AppSettings initAppSettings() {
+        app = new AppSettings();
 
-        this.app.testApp = this.properties.getProperty("testApp", null);
-        this.log.info("[TestApp] TestApp File: " + this.app.testApp);
+        app.testApp = properties.getProperty("testApp", null);
+        log.info("[TestApp] TestApp File: " + app.testApp);
 
-        this.app.testAppName = this.getTestAppName();
-        this.log.info("[TestApp] TestApp Name: " + this.app.testAppName);
+        app.testAppName = getTestAppName();
+        log.info("[TestApp] TestApp Name: " + app.testAppName);
 
-        this.app.packageId = this.getPackageId();
-        this.log.info("[TestApp] TestApp PackageId: " + this.app.packageId);
+        app.packageId = getPackageId();
+        log.info("[TestApp] TestApp PackageId: " + app.packageId);
 
         // Set defaultActivity
-        if (this.platform == PlatformType.Android) {
-            this.app.defaultActivity = this.getDefaultActivity();
-            this.log.info("[TestApp] Default Activity: " + this.app.defaultActivity);
+        if (platform == PlatformType.Android) {
+            app.defaultActivity = getDefaultActivity();
+            log.info("[TestApp] Default Activity: " + app.defaultActivity);
         }
 
-        return this.app;
+        return app;
     }
 
-    private WebSettings initWebSettings() throws Exception {
-        this.app = new AppSettings();
-        this.web = new WebSettings();
+    private static WebSettings initWebSettings() throws Exception {
+        app = new AppSettings();
+        web = new WebSettings();
 
-        this.web.browser = this.getBrowserType();
-        this.log.info("[Web] Browser: " + this.web.browser);
+        web.browser = getBrowserType();
+        log.info("[Web] Browser: " + web.browser);
 
-        if (this.platform == PlatformType.Android) {
+        if (platform == PlatformType.Android) {
             // Set packageId of browser
-            this.app.packageId = "com.android." + this.web.browser.toLowerCase();
-            this.log.info("[Web] Browser PackageId: " + this.app.packageId);
+            app.packageId = "com.android." + web.browser.toLowerCase();
+            log.info("[Web] Browser PackageId: " + app.packageId);
         }
 
-        this.web.baseURL = this.properties.getProperty("baseURL", null);
-        this.log.info("[Web] Base URL: " + this.web.baseURL);
+        web.baseURL = properties.getProperty("baseURL", null);
+        log.info("[Web] Base URL: " + web.baseURL);
 
-        return this.web;
+        return web;
     }
 
-    private IOSSettings initIOSSettings() {
-        this.ios = new IOSSettings();
+    private static IOSSettings initIOSSettings() {
+        ios = new IOSSettings();
 
         // Set acceptAlerts
-        this.ios.acceptAlerts = this.propertyToBoolean("acceptAlerts", false);
-        this.log.info("[iOS Only] Auto Accept Alerts: " + this.ios.acceptAlerts);
+        ios.acceptAlerts = propertyToBoolean("acceptAlerts", false);
+        log.info("[iOS Only] Auto Accept Alerts: " + ios.acceptAlerts);
 
-        return this.ios;
+        return ios;
     }
 
-    private AndroidSettings initAndroidSettings() {
-        this.android = new AndroidSettings();
+    private static AndroidSettings initAndroidSettings() {
+        android = new AndroidSettings();
 
         // Set emulatorOptions
-        this.android.emulatorOptions = this.properties.getProperty("defaultActivity", "");
-        this.log.info("[Android Only] Emulator Startup Options: " + this.android.emulatorOptions);
+        android.emulatorOptions = properties.getProperty("defaultActivity", "");
+        log.info("[Android Only] Emulator Startup Options: " + android.emulatorOptions);
 
-        return this.android;
+        return android;
     }
 
-    private Boolean propertyToBoolean(String str, boolean defaultValue) {
-        String value = this.properties.getProperty(str);
+    private static Boolean propertyToBoolean(String str, boolean defaultValue) {
+        String value = properties.getProperty(str);
         if (value == null) {
             return defaultValue;
         }
@@ -288,21 +302,6 @@ public class Settings {
             return false;
         } else {
             return null;
-        }
-    }
-
-    public Settings() throws Exception {
-        this.log.info("Init settings...");
-        String config = getProperty("config");
-        if (config != null) {
-            this.log.debug("Configuration: " + config);
-            this.properties = this.readPropertiesFile(config);
-            this.initSettings();
-            this.initApplicationTypeSpecificSettings();
-            this.initPlatformSpecificSettings();
-        } else {
-            this.log.fatal("Config file not specified.");
-            throw new Exception("Config file not specified.");
         }
     }
 }

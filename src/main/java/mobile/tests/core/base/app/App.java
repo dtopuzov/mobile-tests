@@ -6,8 +6,13 @@ import mobile.tests.core.enums.ApplicationType;
 import mobile.tests.core.settings.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.ScreenOrientation;
 import org.testng.Assert;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 /**
  * This class represent application under test.
@@ -15,32 +20,30 @@ import org.testng.Assert;
 public class App {
 
     private AppiumDriver driver;
-    private Settings settings;
     private Logger log = LogManager.getLogger(BasePage.class.getName());
 
-    public App(Settings settings, AppiumDriver driver) {
+    public App(AppiumDriver driver) {
         this.driver = driver;
-        this.settings = settings;
     }
 
     public void restart() {
-        if (this.settings.testAppType == ApplicationType.Web) {
-            String browser = this.settings.web.browser;
-            String url = this.settings.web.baseURL;
+        if (Settings.testAppType == ApplicationType.Web) {
+            String browser = Settings.web.browser;
+            String url = Settings.web.baseURL;
             this.driver.get(url);
             this.log.info(browser + " restarted at " + url);
         } else {
-            String app = this.settings.app.testAppName;
+            String app = Settings.app.testAppName;
             this.driver.resetApp();
             this.log.info(app + " restarted.");
         }
     }
 
     public void runInBackground(int seconds) {
-        this.log.info("Run " + this.settings.app.testAppName
+        this.log.info("Run " + Settings.app.testAppName
                 + " in background for " + String.valueOf(seconds) + "seconds.");
         this.driver.runAppInBackground(seconds);
-        this.log.info(this.settings.app.testAppName + " is back on top.");
+        this.log.info(Settings.app.testAppName + " is back on top.");
     }
 
     public void rotate(ScreenOrientation orientation) {
@@ -53,5 +56,15 @@ public class App {
         ScreenOrientation orientation = this.driver.getOrientation();
         this.log.info("Current screen orientation is " + orientation);
         return orientation;
+    }
+
+    public BufferedImage getScreen() {
+        try {
+            File screen = this.driver.getScreenshotAs(OutputType.FILE);
+            return ImageIO.read(screen);
+        } catch (Exception e) {
+            this.log.error("Failed to take screenshot!");
+            return null;
+        }
     }
 }
