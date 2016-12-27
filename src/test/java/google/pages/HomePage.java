@@ -1,6 +1,7 @@
 package google.pages;
 
 import io.appium.java_client.AppiumDriver;
+import mobile.tests.core.base.context.TestContext;
 import mobile.tests.core.base.page.BasePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -12,8 +13,8 @@ import org.testng.Assert;
  */
 public class HomePage extends BasePage {
 
-    public HomePage(AppiumDriver driver) {
-        super(driver);
+    public HomePage(TestContext context) {
+        super(context);
     }
 
     @FindBy(id = "lst-ib")

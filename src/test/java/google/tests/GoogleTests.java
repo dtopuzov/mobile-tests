@@ -17,17 +17,17 @@ public class GoogleTests extends BaseTest {
 
     @Test
     public void searchTest() {
-        HomePage home = new HomePage(this.client.driver);
+        HomePage home = new HomePage(this.context);
         home.searchFor("Appium").verifyLinkExist("http://appium.io/");
     }
 
     @Test
     public void temperature() {
-        HomePage home = new HomePage(this.client.driver);
+        HomePage home = new HomePage(this.context);
         home.searchFor("sofia temperature");
 
         // Get temperature displayed on web page
-        WebElement temp = home.driver.findElement(By.id("wob_tm"));
+        WebElement temp = home.context.driver.findElement(By.id("wob_tm"));
         String tempFromWeb = temp.getText();
 
         // Get temperature via web service

@@ -1,7 +1,7 @@
 package selendroid.pages;
 
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import mobile.tests.core.base.context.TestContext;
 import mobile.tests.core.base.page.BasePage;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.support.CacheLookup;
@@ -13,8 +13,8 @@ import org.testng.Assert;
  */
 public class HomePage extends BasePage {
 
-    public HomePage(AppiumDriver driver) {
-        super(driver);
+    public HomePage(TestContext context) {
+        super(context);
         this.loaded();
     }
 
@@ -72,7 +72,7 @@ public class HomePage extends BasePage {
     public ProgressDialog tapShowProgressBar() {
         this.showProgressBarButton.tap(1, 500);
         this.log.info("Tap on Show Progress Bar");
-        return new ProgressDialog(this.driver);
+        return new ProgressDialog(this.context);
     }
 
     public void dissmissPopupDialog() {

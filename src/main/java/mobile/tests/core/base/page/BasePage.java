@@ -3,6 +3,7 @@ package mobile.tests.core.base.page;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
+import mobile.tests.core.base.context.TestContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
@@ -18,8 +19,9 @@ import java.io.IOException;
  */
 public class BasePage {
 
-    public AppiumDriver driver;
-    public Logger log = LogManager.getLogger(BasePage.class.getName());
+    public TestContext context;
+    protected AppiumDriver driver;
+    protected Logger log = LogManager.getLogger(BasePage.class.getName());
 
     private BufferedImage getScreen() {
         try {
@@ -31,8 +33,9 @@ public class BasePage {
         }
     }
 
-    public BasePage(AppiumDriver driver) {
-        this.driver = driver;
+    public BasePage(TestContext context) {
+        this.context = context;
+        this.driver = context.driver;
         PageFactory.initElements(new AppiumFieldDecorator(driver), this);
     }
 

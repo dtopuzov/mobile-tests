@@ -15,7 +15,7 @@ public class SelendroidTests extends BaseTest {
 
     @Test
     public void checkBox() {
-        HomePage seleniumDemo = new HomePage(this.client.driver);
+        HomePage seleniumDemo = new HomePage(this.context);
         seleniumDemo.tapCheckBox();
         Assert.assertEquals(seleniumDemo.isChecked(), false, "Checkbox is still checked.");
         seleniumDemo.tapCheckBox();
@@ -24,7 +24,7 @@ public class SelendroidTests extends BaseTest {
 
     @Test
     public void dismissPopup() throws IOException {
-        HomePage seleniumDemo = new HomePage(this.client.driver);
+        HomePage seleniumDemo = new HomePage(this.context);
         seleniumDemo.tapDisplayPopupWindow();
         seleniumDemo.logScreen("Before popup dismiss");
         seleniumDemo.dissmissPopupDialog();
@@ -33,14 +33,14 @@ public class SelendroidTests extends BaseTest {
 
     @Test
     public void verifyToastMessages() throws IOException {
-        HomePage seleniumDemo = new HomePage(this.client.driver);
+        HomePage seleniumDemo = new HomePage(this.context);
         seleniumDemo.tapDisplayToast();
         seleniumDemo.logScreen("Toast");
     }
 
     @Test
     public void progressDialog() {
-        HomePage seleniumDemo = new HomePage(this.client.driver);
+        HomePage seleniumDemo = new HomePage(this.context);
         ProgressDialog dialog = seleniumDemo.tapShowProgressBar();
         dialog.waitUntilDisappear();
     }

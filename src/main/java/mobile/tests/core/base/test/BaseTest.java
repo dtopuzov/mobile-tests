@@ -3,6 +3,7 @@ package mobile.tests.core.base.test;
 import mobile.tests.core.appium.Client;
 import mobile.tests.core.appium.Server;
 import mobile.tests.core.base.app.App;
+import mobile.tests.core.base.context.TestContext;
 import mobile.tests.core.settings.Settings;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,10 +22,11 @@ import java.lang.reflect.Method;
 public class BaseTest {
 
     public Settings settings;
-    public Logger log = LogManager.getLogger(BaseTest.class.getName());
-    public Client client;
     public App app;
+    public Logger log = LogManager.getLogger(BaseTest.class.getName());
+    public TestContext context;
 
+    private Client client;
     private Server server;
     private Exception failedToInitSettings = null;
     private boolean isFirstTest = true;
@@ -60,6 +62,7 @@ public class BaseTest {
         this.verifySettings();
         this.client.startAppiumClient();
         this.app = new App(this.settings, this.client.driver);
+        this.context = new TestContext(this.settings, this.client.driver, this.app);
     }
 
     @BeforeMethod(alwaysRun = true)

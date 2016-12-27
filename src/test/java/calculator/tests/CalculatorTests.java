@@ -27,14 +27,14 @@ public class CalculatorTests extends BaseTest {
 
     @Test(dataProvider = "calcDataProvider")
     public void calcOperations(String operation, int firstDigit, int secondDigit, String expectedResult) {
-        HomePage calc = new HomePage(this.client.driver);
+        HomePage calc = new HomePage(this.context);
         calc.performOperation(operation, firstDigit, secondDigit);
         Assert.assertEquals(expectedResult, calc.getResult());
     }
 
     @Test
     public void rotate() {
-        HomePage calc = new HomePage(this.client.driver);
+        HomePage calc = new HomePage(this.context);
         calc.performOperation(OperationType.PLUS, 3, 3);
         this.app.rotate(ScreenOrientation.LANDSCAPE);
         Assert.assertEquals("6", calc.getResult());
@@ -44,7 +44,7 @@ public class CalculatorTests extends BaseTest {
 
     @Test
     public void runInBackground() {
-        HomePage calc = new HomePage(this.client.driver);
+        HomePage calc = new HomePage(this.context);
         calc.performOperation(OperationType.PLUS, 3, 4);
         this.app.runInBackground(10);
         Assert.assertEquals("7", calc.getResult());

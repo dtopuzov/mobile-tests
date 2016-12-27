@@ -1,7 +1,7 @@
 package selendroid.pages;
 
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import mobile.tests.core.base.context.TestContext;
 import mobile.tests.core.base.page.BasePage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.FindBy;
@@ -17,8 +17,8 @@ public class ProgressDialog extends BasePage {
     @FindBy(className = "android.widget.ProgressBar")
     private MobileElement progressBar;
 
-    public ProgressDialog(AppiumDriver driver) {
-        super(driver);
+    public ProgressDialog(TestContext context) {
+        super(context);
         Assert.assertTrue(this.progressBar.isDisplayed());
         this.log.info("Progress dialog loaded.");
     }
