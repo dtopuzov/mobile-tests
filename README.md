@@ -25,42 +25,38 @@ Setup steps:
 
 1. Download Android SDK zip and extract it
 
-2. Set ANDROID_HOME variable (in my case: `C:\Tools\android-sdk`)
+2. Set ANDROID_HOME variable (in my case: `~/tools/android-sdk`)
 
-3. (Optional) Add `%ANDRID_HOME%\tools` and `%ANDRID_HOME%\platform-tools` to PATH
-
-4. Update Android SDK
-
-5. Install [Intel HAXM](https://software.intel.com/en-us/android/articles/intel-hardware-accelerated-execution-manager) in order to use accelerated emulators
-
-6. Download emulator images and create emulators
+3. Update Android SDK, Install Intel HAXM, Download emulator images and create emulators
 
 ```
 #!/bin/bash
 
-echo y | $ANDROID_HOME/tools/android update sdk --filter platform-tools --all --no-ui
-echo y | $ANDROID_HOME/tools/android update sdk --filter tools --all --no-ui
-echo y | $ANDROID_HOME/tools/android update sdk --filter build-tools-24.0.2 --all --no-ui
-echo y | $ANDROID_HOME/tools/android update sdk --filter android-23 --all --no-ui
-echo y | $ANDROID_HOME/tools/android update sdk --filter android-22 --all --no-ui
-echo y | $ANDROID_HOME/tools/android update sdk --filter android-21 --all --no-ui
-echo y | $ANDROID_HOME/tools/android update sdk --filter android-19 --all --no-ui
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "tools"
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "build-tools;25.0.3"
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "build-tools;23.0.1"
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-25"
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-23"
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-19"
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "emulator"
 
-echo y | $ANDROID_HOME/tools/android update sdk --filter extra-intel-Hardware_Accelerated_Execution_Manager --all --no-ui
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "extras;intel;Hardware_Accelerated_Execution_Manager"
 sudo $ANDROID_HOME/extras/intel/Hardware_Accelerated_Execution_Manager/silent_install.sh
 
-echo y | $ANDROID_HOME/tools/android update sdk --filter sys-img-x86-android-23 --all --no-ui
-echo y | $ANDROID_HOME/tools/android update sdk --filter sys-img-x86-android-22 --all --no-ui
-echo y | $ANDROID_HOME/tools/android update sdk --filter sys-img-x86-android-21 --all --no-ui
-echo y | $ANDROID_HOME/tools/android update sdk --filter sys-img-x86-android-19 --all --no-ui
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-25;google_apis;x86"
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-23;default;x86"
+echo y |  $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-19;default;x86"
 
-echo no | $ANDROID_HOME/tools/android create avd -n Emulator-Api19-Default -t android-19 --abi default/x86 -c 12M -f
-echo no | $ANDROID_HOME/tools/android create avd -n Emulator-Api21-Default -t android-21 --abi default/x86 -c 12M -f
-echo no | $ANDROID_HOME/tools/android create avd -n Emulator-Api22-Default -t android-22 --abi default/x86 -c 12M -f
-echo no | $ANDROID_HOME/tools/android create avd -n Emulator-Api23-Default -t android-23 --abi default/x86 -c 12M -f
+echo no | $ANDROID_HOME/tools/bin/avdmanager create avd -n Emulator-Api19-Default -k "system-images;android-19;default;x86" -b default/x86 -c 12M -f
+echo no | $ANDROID_HOME/tools/bin/avdmanager create avd -n Emulator-Api23-Default -k "system-images;android-23;default;x86" -b default/x86 -c 12M -f
+echo no | $ANDROID_HOME/tools/bin/avdmanager create avd -n Emulator-Api25-Google -k "system-images;android-25;google_apis;x86" -b google_apis/x86 -c 12M -f
+
+# Note: Do not run last line if you don't understand it!
+# Append "hw.gpu.enabled=yes", "hw.lcd.density=240" and "skin.name=480x800" to config.ini file of each emulator
+find ~/.android/avd -type f -name 'config.ini' -exec bash -c 'echo $0 && echo "hw.lcd.density=240" | tee -a $0 && echo "skin.name=480x800" | tee -a $0 && echo "hw.gpu.enabled=yes"  | tee -a $0 && echo "hw.keyboard=no" | tee -a $0 && cat $0' {} \;
 ```
 
-### [Appium](http://appium.io/) 1.6.0 or above
+### [Appium](http://appium.io/)
 
 ```
 npm install -g appium
